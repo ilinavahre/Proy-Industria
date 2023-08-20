@@ -1,0 +1,14 @@
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+    )
+    (shield::field created_by
+        required true
+        pattern integer
+    )
+)
+
+(db::update "##sales" (& sale_id (id)) (& created_by (created_by) ))
+(&)

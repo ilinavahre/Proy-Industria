@@ -1,0 +1,14 @@
+
+(sentinel::privilege-required "Administrador, Ventas")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(*) `count`
+
+    FROM ##sale_details x
+    INNER JOIN ##products p ON p.product_id=x.product_id
+
+    WHERE {filters}
+`)

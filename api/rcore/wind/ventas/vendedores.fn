@@ -1,0 +1,17 @@
+
+(sentinel::privilege-required "Administrador, Ventas")
+
+(db::table `
+    SELECT
+        x.user_id id,
+        CONCAT(x.name, ' - ', x.username) label,
+        GROUP_CONCAT(p.name)
+
+    FROM ##users x
+    INNER JOIN ##user_privileges up ON up.user_id=x.user_id
+    INNER JOIN ##privileges p ON p.privilege_id=up.privilege_id AND p.name IN ('Administrador', 'Ventas')
+    WHERE x.is_active=1 AND x.is_authorized=1
+
+    GROUP BY x.user_id
+    ORDER BY x.name ASC
+`)

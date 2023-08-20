@@ -1,0 +1,113 @@
+
+(set camposOrdenables (&
+    id              "x.product_id"
+    created         "x.created"
+    code            "x.code"
+    warehouse       "w.name"
+    name            "x.name"
+    price           "x.price"
+    cost            "x.cost"
+    unit            "u.name"
+    quantity        "x.quantity"
+    tax             "t.name"
+))
+
+(shield::validate
+
+    (shield::field sort
+        default-stop "created"
+        pattern `/^(id|created|code|warehouse|name|price|cost|unit|quantity|tax)$/`
+        set (camposOrdenables.($))
+    )
+
+    (shield::field order
+        default-stop "desc"
+        pattern `/^(asc|desc)$/`
+    )
+
+    (shield::field unique
+        default-stop "false"
+        pattern bool
+    )
+)
+
+(shield::validate filters
+
+    (shield::field filter_is_active
+        set "x.is_active=1"
+    )
+
+    (shield::field filter_created
+        required false
+        pattern date
+        set `DATE(x.created)={!$}`
+    )
+
+    (shield::field id
+        required false
+        pattern integer
+        set `x.product_id={$}`
+    )
+
+    (shield::field filter_id
+        required false
+        pattern integer
+        set `x.product_id={$}`
+    )
+
+    (shield::field filter_code
+        required false
+        pattern text
+        set `x.code LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_warehouse
+        required false
+        pattern text
+        set `w.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_name
+        required false
+        pattern text
+        set `x.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_price
+        required false
+        pattern positive-numeric
+		set `x.price <= {$}`
+    )
+
+    (shield::field filter_cost
+        required false
+        pattern positive-numeric
+		set `x.cost <= {$}`
+    )
+
+    (shield::field filter_tax
+        required false
+        pattern text
+		set `t.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_unit
+        required false
+        pattern text
+		set `u.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_quantity
+        required false
+        pattern positive-numeric
+		set `x.quantity <= {$}`
+    )
+
+)
+
+(set filters (str `(` (join " AND " (values (filters))) `)`))
+(set groupby "")
+
+(when (eq (unique) "true")
+    (set groupby "GROUP BY x.code")
+)

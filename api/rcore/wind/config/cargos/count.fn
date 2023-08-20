@@ -1,0 +1,14 @@
+
+(sentinel::privilege-required "Administrador, Recursos Humanos")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(x.position_id) `count`
+
+    FROM ##positions x
+    INNER JOIN ##departments d ON d.is_active=1 AND d.department_id=x.department_id
+
+    WHERE {filters}
+`)

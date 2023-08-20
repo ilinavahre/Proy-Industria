@@ -1,0 +1,62 @@
+
+(sentinel::privilege-required "Administrador")
+
+(import "lib/utils" as "utils")
+
+(shield::begin)
+
+(shield::validate input
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field is_authorized
+        default 1
+        pattern bit
+    )
+
+    (shield::field username
+        required true
+        pattern identifier
+        check:record_exists (isnull (db::scalar `SELECT user_id FROM ##users WHERE is_active=1 AND username={!$}`))
+    )
+
+    (shield::field position_id
+        required true
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT position_id FROM ##positions WHERE is_active=1 AND position_id={$}`))
+    )
+
+    (shield::field password
+        required true
+        set (sentinel::password (formData.password))
+    )
+
+    (shield::field name
+        required true
+        pattern name
+    )
+
+    (shield::field email
+        required false
+        pattern email
+    )
+)
+
+(shield::validate input2
+    (shield::field privilege_id
+        required:privs true
+		pattern integer-list
+    )
+)
+
+(shield::end)
+
+(db::insert "##users" (input))
+(set id (db::lastInsertId))
+
+(utils::updateList "user_id" (id) "##user_privileges" "privilege_id" (input2.privilege_id))
+(utils::updatePicture (gateway.request) "photo" (id) "##users" "user_id" "photo" 512 512)
+
+(&)

@@ -1,0 +1,29 @@
+
+(sentinel::privilege-required "Administrador, Ventas")
+
+(import "lib/utils" as "utils")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.sale_id,
+        x.product_id,
+        p.name product,
+        x.price,
+        x.quantity,
+        x.subtotal,
+        x.taxes,
+        x.subtotal + x.taxes total
+
+    FROM ##sale_details x
+    INNER JOIN ##products p ON p.product_id=x.product_id
+
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(list)

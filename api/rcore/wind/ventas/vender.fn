@@ -1,0 +1,76 @@
+
+(sentinel::privilege-required "Administrador, Ventas")
+
+(shield::type productId
+    required true
+    pattern integer
+    set (db::row `
+        SELECT
+            p.product_id, p.name, p.price, p.quantity,
+            IFNULL(t.value, 0) tax
+        FROM ##products p
+        LEFT JOIN ##taxes t ON t.is_active=1 AND t.tax_id=p.tax_id
+        WHERE p.is_active=1 AND p.is_visible=1 AND p.product_id={$}
+    `)
+    check:product (isnotnull ($))
+)
+
+(shield::validate
+    (shield::field input
+        json-load "POST"
+        data (array (object
+            id (type productId)
+            count (integer)
+        ))
+    )
+)
+
+(set subtotal 0)
+(set taxes 0)
+(set total 0)
+
+(for (input)
+    (set p (i.id))
+
+    (when (lt (p.quantity) (i.count))
+        (throw "No hay suficientes existencias de: (p.name)"))
+
+    (set i.subtotal (* (p.price) (i.count)))
+    (set i.taxes (/ (* (p.tax) (i.subtotal)) 100))
+
+    (inc subtotal (i.subtotal))
+    (inc taxes (i.taxes))
+
+    (inc total (+ (i.subtotal) (i.taxes)))
+)
+
+(db::insert "##sales" (&
+    created (datetime::now)
+    created_by (session.user.user_id)
+    subtotal (subtotal)
+    taxes (taxes)
+    total (total)
+))
+
+(set sale_id (db::lastInsertId))
+
+(for (input)
+    (set p (i.id))
+
+    (db::insert "##sale_details" (&
+        product_id (p.product_id)
+        sale_id (sale_id)
+        price (p.price)
+        quantity (i.count)
+        subtotal (i.subtotal)
+        taxes (i.taxes)
+    ))
+)
+
+(db::exec `
+    UPDATE ##products p
+    INNER JOIN ##sale_details d ON d.sale_id={sale_id} AND d.product_id=p.product_id
+    SET p.quantity = p.quantity - d.quantity
+`)
+
+(&)

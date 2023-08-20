@@ -1,0 +1,13 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(*) `count`
+
+    FROM ##warehouses x
+
+    WHERE {filters}
+`)

@@ -1,0 +1,76 @@
+
+(set camposOrdenables (&
+    id              "x.sale_id"
+    created         "x.created"
+    created_by      "c.name"
+    status          "d.user_id"
+    subtotal        "x.subtotal"
+    taxes           "x.taxes"
+    total           "x.total"
+))
+
+(shield::validate
+
+    (shield::field sort
+        default-stop "created"
+        pattern `/^(id|created|created_by|status|subtotal|taxes|total)$/`
+        set (camposOrdenables.($))
+    )
+
+    (shield::field order
+        default-stop "desc"
+        pattern `/^(asc|desc)$/`
+    )
+)
+
+(shield::validate filters
+
+    (shield::field filter_is_active
+        set "x.is_active=1"
+    )
+
+    (shield::field filter_created
+        required false
+        pattern date
+        set `DATE(x.created)={!$}`
+    )
+
+    (shield::field id
+        required false
+        pattern integer
+        set `x.sale_id={$}`
+    )
+
+    (shield::field filter_id
+        required false
+        pattern integer
+        set `x.sale_id={$}`
+    )
+
+    (shield::field filter_created_by
+        required false
+        pattern text
+        set `c.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_subtotal
+        required false
+        pattern positive-numeric
+		set `x.subtotal <= {$}`
+    )
+
+    (shield::field filter_taxes
+        required false
+        pattern positive-numeric
+		set `x.taxes <= {$}`
+    )
+
+    (shield::field filter_total
+        required false
+        pattern positive-numeric
+		set `x.total <= {$}`
+    )
+
+)
+
+(set filters (str `(` (join " AND " (values (filters))) `)`))

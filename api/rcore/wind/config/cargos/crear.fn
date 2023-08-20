@@ -1,0 +1,71 @@
+
+(sentinel::privilege-required "Administrador, Recursos Humanos")
+
+(import "lib/utils" as "utils")
+
+(shield::begin)
+
+(shield::validate input
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field is_visible
+        default 1
+        pattern bit
+    )
+
+    (shield::field name
+        required true
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT position_id FROM ##positions WHERE is_active=1 AND name={!$}`))
+    )
+
+    (shield::field department_id
+        required true
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT department_id FROM ##departments WHERE is_active=1 AND department_id={$}`))
+    )
+
+    (shield::field salary
+        required true
+        pattern positive-numeric
+    )
+
+    (shield::field vacation_days
+        required true
+        pattern positive-numeric
+    )
+    (shield::field vacation_leave
+        required true
+        pattern bit
+    )
+    (shield::field cumulative_vacations
+        required true
+        pattern bit
+    )
+
+    (shield::field sick_days
+        required true
+        pattern positive-numeric
+    )
+    (shield::field sick_leave
+        required true
+        pattern bit
+    )
+
+    (shield::field maternity_days
+        required true
+        pattern positive-numeric
+    )
+    (shield::field maternity_leave
+        required true
+        pattern bit
+    )
+)
+
+(shield::end)
+
+(db::insert "##positions" (input))
+(&)

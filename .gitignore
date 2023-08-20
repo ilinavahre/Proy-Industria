@@ -1,0 +1,8 @@
+--*
+node_modules
+dist
+redist
+api/volatile
+api/vendor
+api/storage/products
+api/storage/users

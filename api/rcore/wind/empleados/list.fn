@@ -1,0 +1,41 @@
+
+(sentinel::privilege-required "Administrador")
+
+(import "lib/utils" as "utils")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.user_id id,
+        x.created,
+        x.is_authorized,
+        x.username,
+        x.name,
+		x.email,
+        x.photo photo_url,
+		GROUP_CONCAT(p.privilege_id) privilege_id,
+		GROUP_CONCAT(p.name SEPARATOR ", ") privileges,
+        po.position_id,
+        po.name position,
+        d.department_id,
+        d.name department
+
+    FROM ##users x
+    LEFT JOIN ##user_privileges up ON up.user_id=x.user_id
+    LEFT JOIN ##privileges p ON p.privilege_id=up.privilege_id
+    LEFT JOIN ##positions po ON po.position_id=x.position_id
+    LEFT JOIN ##departments d ON d.department_id=po.department_id
+
+    WHERE {filters}
+    GROUP BY x.user_id
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+    (set i.photo_url (utils::getPictureUrl (i.photo_url)))
+)

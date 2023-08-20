@@ -1,0 +1,12 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(db::table `
+    SELECT
+        x.warehouse_id id,
+        x.name label
+
+    FROM ##warehouses x
+    WHERE x.is_active=1
+    ORDER BY x.name ASC
+`)

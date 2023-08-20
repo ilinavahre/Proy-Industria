@@ -1,0 +1,40 @@
+
+(shield::validate
+	(shield::field token
+		required true
+		pattern identifier
+		check:invalid-token (eq (config.Sentinel.token) ($))
+	)
+
+    (shield::field data
+        json-load "POST"
+        data (array (object
+            table (string)
+            rows (array (object ...))
+        ))
+    )
+)
+
+(set query (file::read "@local/db-schema.sql"))
+
+(for query (filter i (split ";" (query)) (ne '' (i)))
+	(try
+		(db::exec (query))
+	catch
+		(echo "ERROR: (err)")
+	)
+)
+
+(for i (data)
+    (echo "TABLE (i.table), COUNT=" (db::scalar `SELECT COUNT(*) FROM ##{i.table}`))
+    (for j (i.rows)
+        (try
+            (echo "(i.table): (j#)")
+            (db::insert "##(i.table)" (j))
+        catch
+            (echo "ERROR: (err): (j)")
+        )
+    )
+)
+
+(&)

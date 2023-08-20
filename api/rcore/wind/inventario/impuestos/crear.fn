@@ -1,0 +1,30 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(shield::validate input
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field is_visible
+        default 1
+        pattern bit
+    )
+
+    (shield::field name
+        required true
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT tax_id FROM ##taxes WHERE is_active=1 AND name={!$}`))
+    )
+
+    (shield::field value
+        required true
+        pattern positive-numeric
+        min-value 0
+        max-value 100
+    )
+)
+
+(db::insert "##taxes" (input))
+(&)

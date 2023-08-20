@@ -1,0 +1,73 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(import "lib/utils" as "utils")
+
+(shield::begin)
+
+(shield::validate input
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field is_visible
+        default 1
+        pattern bit
+    )
+
+    (shield::field warehouse_id
+        required true
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT warehouse_id FROM ##warehouses WHERE is_active=1 AND warehouse_id={$}`))
+    )
+
+    (shield::field name
+        required true
+        requires warehouse_id
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT product_id FROM ##products WHERE is_active=1 AND name={!$} AND warehouse_id={$out.warehouse_id}`))
+    )
+
+    (shield::field code
+        required true
+        requires warehouse_id
+        pattern code
+        check:record_exists (isnull (db::scalar `SELECT product_id FROM ##products WHERE is_active=1 AND code={!$} AND warehouse_id={$out.warehouse_id}`))
+    )
+
+    (shield::field unit_id
+        required true
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT unit_id FROM ##units WHERE is_active=1 AND unit_id={$}`))
+    )
+
+    (shield::field tax_id
+        required false
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT tax_id FROM ##taxes WHERE is_active=1 AND tax_id={$}`))
+    )
+
+    (shield::field price
+        required true
+        pattern positive-numeric
+    )
+    (shield::field cost
+        required true
+        pattern positive-numeric
+    )
+
+    (shield::field quantity
+        required true
+        pattern positive-numeric
+    )
+)
+
+(shield::end)
+
+(db::insert "##products" (input))
+(set id (db::lastInsertId))
+
+(utils::updatePicture (gateway.request) "photo" (id) "##products" "product_id" "photo" 512 320)
+
+(&)

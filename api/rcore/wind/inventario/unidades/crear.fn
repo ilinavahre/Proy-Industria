@@ -1,0 +1,37 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(import "lib/utils" as "utils")
+
+(shield::begin)
+
+(shield::validate input
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field is_visible
+        default 1
+        pattern bit
+    )
+
+    (shield::field name
+        required true
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE is_active=1 AND name={!$}`))
+    )
+
+    (shield::field short
+        required true
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE is_active=1 AND short={!$}`))
+    )
+
+)
+
+(shield::end)
+
+(db::insert "##units" (input))
+
+(&)

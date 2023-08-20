@@ -1,0 +1,65 @@
+
+(set camposOrdenables (&
+    id              "x.sale_id"
+    product         "p.name"
+    quantity        "x.quantity"
+    subtotal        "x.subtotal"
+    taxes           "x.taxes"
+    total           "total"
+))
+
+(shield::validate
+
+    (shield::field sort
+        default "id"
+        pattern `/^(id|product|quantity|subtotal|taxes|total)$/`
+        set (camposOrdenables.($))
+    )
+
+    (shield::field order
+        default-stop "asc"
+        pattern `/^(asc|desc)$/`
+    )
+)
+
+(shield::validate filters
+
+    (shield::field sale_id
+        required true
+        pattern integer
+        set `x.sale_id={$}`
+    )
+
+    (shield::field filter_product
+        required false
+        pattern text
+		set `p.name LIKE {db::escape {str "%" {$} "%"}}`
+    )
+
+    (shield::field filter_quantity
+        required false
+        pattern positive-numeric
+		set `x.quantity={$}`
+    )
+
+    (shield::field filter_subtotal
+        required false
+        pattern positive-numeric
+		set `x.subtotal <= {$}`
+    )
+
+    (shield::field filter_taxes
+        required false
+        pattern positive-numeric
+		set `x.taxes <= {$}`
+    )
+
+    (shield::field filter_total
+        required false
+        pattern positive-numeric
+		set `(x.subtotal+x.taxes) <= {$}`
+    )
+
+)
+
+(set filters (str `(` (join " AND " (values (filters))) `)`))

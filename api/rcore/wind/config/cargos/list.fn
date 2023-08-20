@@ -1,0 +1,37 @@
+
+(sentinel::privilege-required "Administrador, Recursos Humanos")
+
+(import "lib/utils" as "utils")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.position_id id,
+        x.created,
+        x.is_visible,
+        x.name,
+		x.department_id,
+        d.name department,
+		x.salary,
+        x.vacation_days,
+        x.vacation_leave,
+        x.cumulative_vacations,
+        x.sick_days,
+        x.sick_leave,
+        x.maternity_days,
+        x.maternity_leave
+
+    FROM ##positions x
+    INNER JOIN ##departments d ON d.is_active=1 AND d.department_id=x.department_id
+
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+)

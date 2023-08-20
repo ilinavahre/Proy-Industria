@@ -1,0 +1,49 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(shield::begin)
+
+(shield::validate input
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field name
+        required true
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT warehouse_id FROM ##warehouses WHERE is_active=1 AND name={!$}`))
+    )
+
+    (shield::field address1
+        required true
+        pattern text
+    )
+    (shield::field address2
+        required false
+        pattern text
+    )
+
+    (shield::field city
+        required true
+        pattern text
+    )
+    (shield::field state
+        required true
+        pattern text
+    )
+
+    (shield::field email
+        required true
+        pattern email
+    )
+    (shield::field phone
+        required true
+        pattern phone
+    )
+)
+
+(shield::end)
+
+(db::insert "##warehouses" (input))
+(&)

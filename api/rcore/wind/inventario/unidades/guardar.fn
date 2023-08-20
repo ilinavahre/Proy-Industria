@@ -1,0 +1,34 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+        check:record_not_found (isnotnull (db::scalar `SELECT unit_id FROM ##units WHERE is_active=1 AND unit_id={$}`))
+    )
+)
+
+(shield::validate input
+
+    (shield::field is_visible
+        required false
+        pattern bit
+    )
+
+    (shield::field name
+        required false
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE unit_id!={id} AND is_active=1 AND name={!$}`))
+    )
+
+    (shield::field short
+        required false
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE unit_id!={id} AND is_active=1 AND short={!$}`))
+    )
+)
+
+(db::update "##units" "unit_id=(id)" (input))
+
+(&)

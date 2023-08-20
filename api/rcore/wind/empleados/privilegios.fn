@@ -1,0 +1,10 @@
+
+(sentinel::auth-required)
+
+(db::table `
+    SELECT
+		privilege_id `value`,
+        name `label`
+
+    FROM ##privileges
+`)

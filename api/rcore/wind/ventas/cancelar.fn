@@ -1,0 +1,23 @@
+
+(sentinel::privilege-required "Administrador, Ventas")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+        check:cancelled (isnotnull (db::scalar `SELECT 1 FROM ##sales WHERE is_active=1 AND cancelled_by IS NULL AND sale_id={$}`))
+    )
+)
+
+
+(db::update "##sales" (& sale_id (id)) (& cancelled (datetime::now) cancelled_by (session.user.user_id) ))
+
+(when (db::affectedRows)
+    (db::exec `
+        UPDATE ##products p
+        INNER JOIN ##sale_details d ON d.sale_id={id} AND d.product_id=p.product_id
+        SET p.quantity = p.quantity + d.quantity
+    `)
+)
+
+(&)

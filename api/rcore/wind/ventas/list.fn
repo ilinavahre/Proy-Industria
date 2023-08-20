@@ -1,0 +1,33 @@
+
+(sentinel::privilege-required "Administrador, Ventas")
+
+(import "lib/utils" as "utils")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.sale_id id,
+        x.created,
+        c.name created_by,
+        x.cancelled,
+        d.name cancelled_by,
+        x.subtotal,
+        x.taxes,
+        x.total
+
+    FROM ##sales x
+    INNER JOIN ##users c ON c.is_active=1 AND c.user_id=x.created_by
+    LEFT JOIN ##users d ON d.is_active=1 AND d.user_id=x.cancelled_by
+
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+    (set i.s_cancelled (locale::datetime (i.cancelled)))
+)

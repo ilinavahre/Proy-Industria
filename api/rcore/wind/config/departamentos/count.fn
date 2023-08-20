@@ -1,0 +1,13 @@
+
+(sentinel::privilege-required "Administrador, Recursos Humanos")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(x.department_id) `count`
+
+    FROM ##departments x
+
+    WHERE {filters}
+`)

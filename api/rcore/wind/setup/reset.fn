@@ -1,0 +1,22 @@
+
+(shield::validate
+	(shield::field token
+		required true
+		pattern identifier
+		check:invalid-token (eq (config.Sentinel.token) ($))
+	)
+)
+
+(set query (file::read "@local/db-schema.sql"))
+
+(each query (filter i (split ";" (query)) (ne '' (i)))
+	(set value '')
+	(try (@
+		(db::exec (query))
+		(set value 'OK')
+	)
+	catch
+		(set value 'ERROR: (err)\n\n(query)')
+	)
+	(value)
+)

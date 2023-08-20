@@ -1,0 +1,42 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(import "lib/utils" as "utils")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.product_id id,
+        x.created,
+        x.is_visible,
+        x.name,
+        x.warehouse_id,
+        w.name warehouse,
+        x.code,
+		x.cost,
+		x.price,
+		x.unit_id,
+        u.name unit,
+        x.quantity,
+        x.photo photo_url,
+        t.tax_id,
+        IFNULL(t.name, '-') tax
+
+    FROM ##products x
+    INNER JOIN ##units u ON u.is_active=1 AND u.unit_id=x.unit_id
+    LEFT JOIN ##taxes t ON t.is_active=1 AND t.tax_id=x.tax_id
+    LEFT JOIN ##warehouses w ON w.is_active=1 AND w.warehouse_id=x.warehouse_id
+
+    WHERE {filters}
+    {groupby}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+    (set i.photo_url (utils::getPictureUrl (i.photo_url)))
+)

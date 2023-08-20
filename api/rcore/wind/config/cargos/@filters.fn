@@ -1,0 +1,88 @@
+
+(set camposOrdenables (&
+    id              "x.position_id"
+    created         "x.created"
+    department      "d.name"
+    name            "x.name"
+    salary          "x.salary"
+    vacation_days   "x.vacation_days"
+    sick_days       "x.sick_days"
+    maternity_days  "x.maternity_days"
+))
+
+(shield::validate
+
+    (shield::field sort
+        default-stop "created"
+        pattern `/^(id|created|department|name|salary|vacation_days|sick_days|maternity_days)$/`
+        set (camposOrdenables.($))
+    )
+
+    (shield::field order
+        default-stop "desc"
+        pattern `/^(asc|desc)$/`
+    )
+)
+
+(shield::validate filters
+
+    (shield::field filter_is_active
+        set "x.is_active=1"
+    )
+
+    (shield::field filter_created
+        required false
+        pattern date
+        set `DATE(x.created)={!$}`
+    )
+
+    (shield::field id
+        required false
+        pattern integer
+        set `x.position_id={$}`
+    )
+
+    (shield::field filter_id
+        required false
+        pattern integer
+        set `x.position_id={$}`
+    )
+
+    (shield::field filter_department
+        required false
+        pattern text
+		set `d.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_name
+        required false
+        pattern text
+        set `x.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_salary
+        required false
+        pattern positive-numeric
+		set `x.salary <= {$}`
+    )
+
+    (shield::field filter_vacation_days
+        required false
+        pattern positive-numeric
+		set `x.vacation_days <= {$}`
+    )
+
+    (shield::field filter_sick_days
+        required false
+        pattern positive-numeric
+		set `x.sick_days <= {$}`
+    )
+
+    (shield::field filter_maternity_days
+        required false
+        pattern positive-numeric
+		set `x.maternity_days <= {$}`
+    )
+)
+
+(set filters (str `(` (join " AND " (values (filters))) `)`))

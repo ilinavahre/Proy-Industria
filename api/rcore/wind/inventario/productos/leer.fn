@@ -1,0 +1,11 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+    )
+)
+
+(call "inventario.productos.list")

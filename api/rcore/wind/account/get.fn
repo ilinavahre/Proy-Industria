@@ -1,0 +1,15 @@
+
+(import "lib/utils" as "utils")
+
+; Verificar si se debe usar configuración inicial.
+(when (isnull (db::scalar `SELECT 1 FROM ##users WHERE username='admin'`))
+    (stop (& response 410)))
+
+; Validar autenticación.
+(sentinel::auth-required)
+(sentinel::reload)
+
+(set data (map-get (# user_id created username photo name email privileges) (session.user)))
+(set data.photo_url (utils::getPictureUrl (data.photo)))
+
+(data)

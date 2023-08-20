@@ -1,0 +1,15 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(x.product_id) `count`
+
+    FROM ##products x
+    INNER JOIN ##units u ON u.is_active=1 AND u.unit_id=x.unit_id
+
+    WHERE {filters}
+    {groupby}
+`)

@@ -1,0 +1,14 @@
+
+(sentinel::auth-required)
+
+(db::table `
+    SELECT
+        x.department_id,
+        x.position_id value,
+        x.name label
+
+    FROM ##positions x
+
+    WHERE x.is_active=1 AND x.is_visible=1
+    ORDER BY x.name ASC
+`)

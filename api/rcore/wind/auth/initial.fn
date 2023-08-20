@@ -1,0 +1,35 @@
+
+(when-not (isnull (db::scalar `SELECT 1 FROM ##users WHERE username='admin'`))
+    (throw "El usuario admin ya fue inicialiado."))
+
+(shield::validate form
+
+	(shield::field npassword
+		required true
+		min-length 4
+	)
+
+	(shield::field rpassword
+		required true
+		min-length 4
+        check:rpassword (eq ($out.npassword) ($out.rpassword))
+	)
+)
+
+(db::insert "##users" (&
+    created (datetime::now)
+    username "admin"
+    password (sentinel::password (form.npassword))
+    name "Administrador"
+))
+
+(set user_id (db::lastInsertId))
+
+(db::insert "##user_privileges" (&
+    user_id (user_id)
+    privilege_id (db::scalar `SELECT privilege_id FROM ##privileges WHERE name='Administrador'`)
+))
+
+(sentinel::login "admin" (form.npassword))
+
+(&)

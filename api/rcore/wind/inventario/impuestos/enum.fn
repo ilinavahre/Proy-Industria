@@ -1,0 +1,13 @@
+
+(sentinel::auth-required)
+
+(db::table `
+    SELECT
+        x.tax_id value,
+        CONCAT(x.name, " (", x.value, "%)") label
+
+    FROM ##taxes x
+
+    WHERE x.is_active=1 AND x.is_visible=1
+    ORDER BY x.name ASC
+`)

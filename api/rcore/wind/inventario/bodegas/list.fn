@@ -1,0 +1,30 @@
+
+(sentinel::privilege-required "Administrador, Inventario")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.warehouse_id id,
+        x.created,
+
+        x.name,
+        x.address1,
+        x.address2,
+        x.city,
+        x.state,
+        x.email,
+        x.phone
+
+    FROM ##warehouses x
+
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+)

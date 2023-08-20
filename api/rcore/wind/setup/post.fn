@@ -1,0 +1,31 @@
+
+(shield::validate
+	(shield::field token
+		required true
+		pattern identifier
+		check:invalid-token (eq (config.Sentinel.token) ($))
+	)
+)
+
+(set tables (#
+    "sale_details"
+    "sales"
+    "user_privileges"
+    "users"
+    "positions"
+    "departments"
+    "products"
+    "taxes"
+    "units"
+    "suppliers"
+    "warehouses"
+))
+
+(set data (each i (array::reverse (tables))
+    (&
+        table (i)
+        rows (db::table "SELECT * FROM ##(i)")
+    )
+))
+
+(http::post "https://crisol.app/gse/api/setup/update?token=(config.Sentinel.token)" (utils::json::stringify (data)))

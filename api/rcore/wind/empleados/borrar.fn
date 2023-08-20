@@ -1,0 +1,16 @@
+
+(sentinel::privilege-required "Administrador")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+        check:record_not_found (isnotnull (db::scalar `SELECT user_id FROM ##users WHERE is_active=1 AND user_id={$}`))
+    )
+)
+
+(when (eq (id) (session.user.user_id))
+    (throw "No se puede eliminar el usuario actual."))
+
+(db::exec `UPDATE ##users SET is_active=0 WHERE user_id={id}`)
+(&)
