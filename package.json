@@ -20,7 +20,7 @@
     "parcel": "^2.9.3",
     "parcel-reporter-static-files-copy": "^1.5.2",
     "parcel-resolver-ignore": "^2.1.5",
-    "riza": "^3.0.10",
+    "riza": "^3.0.11",
     "shx": "^0.3.4"
   }
 }
