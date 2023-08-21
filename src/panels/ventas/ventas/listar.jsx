@@ -1,15 +1,15 @@
 
 import { Api, DataSource, signal } from 'riza';
-import { quitarFiltros } from '../../actions';
-import { Paginacion } from '../../elems';
+import { quitarFiltros } from '../../../actions';
+import { Paginacion } from '../../../elems';
 
-export const ds = new DataSource('ventas');
+export const ds = new DataSource('ventas.ventas');
 export const enumVendedores = new signal([]);
 
 function onShown() {
     ds.refresh();
     
-    Api.fetch('ventas.vendedores').then(r => {
+    Api.fetch('ventas.ventas.vendedores').then(r => {
         enumVendedores.set(r.data);
     });
 }
@@ -19,15 +19,13 @@ function cancelar(id)
     if (!confirm('Esta seguro de cancelar esta venta?'))
         return;
 
-    Api.fetch('ventas/cancelar', { id }).then(r => {
+    Api.fetch('ventas/ventas/cancelar', { id }).then(r => {
         ds.refresh();
     });
 }
 
 export default () => 
-    <r-panel class="flex-fill" data-route="/ventas/listar/" onPanelShown={ onShown }>
-
-        <h1>Registro de Ventas</h1>
+    <r-panel class="flex-fill" data-route="/ventas/ventas/listar/" onPanelShown={ onShown }>
 
         <Paginacion dataSource={ ds }>
         </Paginacion>
@@ -39,7 +37,9 @@ export default () =>
                     <th style:width="8rem" data-sort="id"><span>Factura</span></th>
                     <th style:width="11rem" data-sort="created"><span>Creada</span></th>
                     <th data-sort="created_by"><span>Creada Por</span></th>
+                    <th data-sort="warehouse"><span>Bodega</span></th>
                     <th style:width="12rem" data-sort="status"><span>Estado</span></th>
+                    <th data-sort="count"><span>No. Productos</span></th>
                     <th data-sort="subtotal"><span>Sub Total</span></th>
                     <th data-sort="taxes"><span>Impuestos</span></th>
                     <th data-sort="total"><span>Total</span></th>
@@ -52,6 +52,7 @@ export default () =>
                     <th><input class="input-small" type="text" data-property="filter_id" /></th>
                     <th><input class="input-small" type="date" data-property="filter_created" /></th>
                     <th><input class="input-small" type="text" data-property="filter_created_by" /></th>
+                    <th><input class="input-small" type="text" data-property="filter_warehouse" /></th>
                     <th>
                         <select class="input-small" data-property="filter_status">
                             <option value="">(Todos)</option>
@@ -59,6 +60,7 @@ export default () =>
                             <option value="1">Cancelada</option>
                         </select>
                     </th>
+                    <th></th>
                     <th><input class="input-small" type="text" data-property="filter_subtotal" /></th>
                     <th><input class="input-small" type="text" data-property="filter_taxes" /></th>
                     <th><input class="input-small" type="text" data-property="filter_total" /></th>
@@ -72,7 +74,7 @@ export default () =>
 
             <tbody className="x-empty">
                 <tr>
-                    <td colSpan="8">No hay registros que mostrar.</td>
+                    <td colSpan="10">No hay registros que mostrar.</td>
                 </tr>
             </tbody>
 
@@ -90,14 +92,16 @@ export default () =>
                                 {item.created_by}
                         </span>
                     </td>
+                    <td>{item.warehouse}</td>
                     <td>
                         {item.cancelled_by ? <span style:color="#800">Cancelada</span> : <span style:color="#080">Procesada</span>}
                     </td>
+                    <td>{item.count}</td>
                     <td>{item.subtotal}</td>
                     <td>{item.taxes}</td>
                     <td>{item.total}</td>
                     <td style:textAlign="center">
-                        <a class="btn-1 btn-blue" href={"#/ventas/ver/"+item.id}><i class="fa-solid fa-list"></i></a>
+                        <a class="btn-1 btn-blue" href={"#/ventas/ventas/ver/"+item.id}><i class="fa-solid fa-list"></i></a>
                         <span class="btn-1 btn-red" class:xx-hidden={ !!item.cancelled_by } onClick={ () => cancelar(item.id) }><i class="fa-solid fa-trash-can"></i></span>
                     </td>
                 </tr>

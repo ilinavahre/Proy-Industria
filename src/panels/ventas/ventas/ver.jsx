@@ -1,9 +1,9 @@
 
 import { Api, DataSource } from 'riza';
-import { back, quitarFiltros } from '../../actions';
-import { Paginacion } from '../../elems';
+import { back, quitarFiltros } from '../../../actions';
+import { Paginacion } from '../../../elems';
 
-export const ds = new DataSource('ventas.detalles');
+export const ds = new DataSource('ventas.ventas.detalles');
 
 function onShown({ id })
 {
@@ -12,7 +12,7 @@ function onShown({ id })
 }
 
 export default () => 
-    <r-panel class="flex-fill" data-route="/ventas/ver/:id" onPanelShown={ onShown }>
+    <r-panel class="flex-fill" data-route="/ventas/ventas/ver/:id" onPanelShown={ onShown }>
 
         <h1>Detalles de Venta</h1>
 

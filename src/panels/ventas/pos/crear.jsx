@@ -1,13 +1,16 @@
 
 import { Api, DataSource, DataList, watch, signal } from 'riza';
-import { authStatus } from '../../signals';
-import { quitarFiltros } from '../../actions';
-import { Paginacion } from '../../elems';
-import { ds as dsProductos } from '../inventario/productos/listar';
+import { authStatus } from '../../../signals';
+import { quitarFiltros } from '../../../actions';
+import { Paginacion } from '../../../elems';
+import { ds as dsProductos } from '../../inventario/productos/listar';
+import { ds as dsBodegas } from '../../inventario/bodegas/listar';
 
 const productos = signal([]);
 const enumProductos = signal([]);
+const enumBodegas = signal([]);
 const codigo = signal('');
+const warehouse_id = signal(0);
 
 const carrito = signal([]);
 const subTotal = signal(0);
@@ -17,6 +20,10 @@ const total = signal(0);
 dsProductos.enum.addEventListener('itemsChanged', () => {
     enumProductos.value = dsProductos.enum.getData().map(i => i.get());
     filtrar();
+});
+
+dsBodegas.enum.addEventListener('itemsChanged', () => {
+    enumBodegas.value = dsBodegas.enum.getData().map(i => i.get());
 });
 
 watch([authStatus], (val) =>
@@ -31,13 +38,14 @@ watch([carrito], (lista) => {
     total.value = subTotal.value + impuestos.value;
 });
 
-watch([codigo], () => {
+watch([warehouse_id, codigo], () => {
     filtrar();
 });
 
 function filtrar()
 {
     let lista = enumProductos.value;
+    lista = lista.filter(p => p.warehouse_id == warehouse_id.value);
 
     if (codigo.value)
         lista = lista.filter(p => p.code.toLowerCase().indexOf(codigo.value.toLowerCase()) >= 0);
@@ -69,6 +77,8 @@ function actualizarProducto(id, count)
 
 function limpiar() {
     carrito.value = [];
+    codigo.value = '';
+    warehouse_id.value = '';
 }
 
 function completar() {
@@ -80,7 +90,7 @@ function completar() {
 
     let venta = carrito.value.map(p => ({ id: p.id, count: p.count }));
 
-    Api.fetch('ventas.vender', JSON.stringify(venta)).then(r =>
+    Api.fetch('ventas.pos.crear', JSON.stringify({ warehouse_id: warehouse_id.value, products: venta })).then(r =>
     {
         if (r.response != 200) {
             alert(r.error);
@@ -93,15 +103,22 @@ function completar() {
 }
 
 export default () => 
-    <r-panel class="flex-fill flex-col" data-route="/ventas/vender/" onPanelShown={ onShown }>
+    <r-panel class="flex-fill flex-col" data-route="/ventas/pos/crear/" onPanelShown={ onShown }>
 
         <div class="flex-fill flex-row ovf-hidden">
 
             <div style:width="75%">
                 <div className="buttons flex-row flex-static">
                     <div class="field">
+                        <label>Bodega</label>
+                        <select style:width="14rem" trait:valueSignal={ warehouse_id } disabled={ warehouse_id }>
+                            <option>(Seleccionar ...)</option>
+                            { $enumBodegas.map((b) => <option value={b.id}>{b.label}</option>) }
+                        </select>
+                    </div>
+                    <div class="field" class:xx-hidden={ $warehouse_id == '' }>
                         <label>Código de Producto</label>
-                        <input class="input" type="text" trait:valueSignal={ codigo } />
+                        <input class="input" type="text" trait:valueSignal={ codigo } style:width="14rem" />
                     </div>
                     <div class="field">
                         <label>&nbsp;</label>
@@ -109,16 +126,18 @@ export default () =>
                     </div>
                 </div>
 
-                {$productos.map((p) =>
-                    <span class="product" onClick={ () => actualizarProducto(p.id, 1) }>
-                        <img src={p.photo_url} />
-                        <span>
-                            <span>{p.code}</span>
-                            {p.name}
+                <div class:xx-hidden={ !$warehouse_id }>
+                    {$productos.map((p) =>
+                        <span class="product" onClick={ () => actualizarProducto(p.id, 1) }>
+                            <img src={p.photo_url} />
+                            <span>
+                                <span>{p.code}</span>
+                                {p.name}
+                            </span>
+                            <b>{p.price} <span>/ {p.unit}</span></b>
                         </span>
-                        <b>{p.price} <span>/ {p.unit}</span></b>
-                    </span>
-                )}
+                    )}
+                </div>
             </div>
 
             <div class="flex-fill flex-col ovf-hidden" style:padding="0 1rem">
@@ -128,7 +147,6 @@ export default () =>
                 </div>
 
                 <div class="cart-list flex-fill ovf-auto">
-
                     {$carrito.length == 0 ? <div class="no-data">No hay productos en el carrito.</div> : ''}
 
                     {$carrito.map((p) =>

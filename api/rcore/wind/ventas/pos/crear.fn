@@ -6,7 +6,7 @@
     pattern integer
     set (db::row `
         SELECT
-            p.product_id, p.name, p.price, p.quantity,
+            p.warehouse_id, p.product_id, p.name, p.price, p.quantity,
             IFNULL(t.value, 0) tax
         FROM ##products p
         LEFT JOIN ##taxes t ON t.is_active=1 AND t.tax_id=p.tax_id
@@ -15,13 +15,22 @@
     check:product (isnotnull ($))
 )
 
+(shield::type warehouseId
+    required true
+    pattern integer
+    check:invalid (isnotnull (db::scalar `SELECT 1 FROM ##warehouses WHERE is_active=1 AND warehouse_id={$}`))
+)
+
 (shield::validate
     (shield::field input
         json-load "POST"
-        data (array (object
-            id (type productId)
-            count (integer)
-        ))
+        data (object
+            warehouse_id (type warehouseId)
+            products (array (object
+                id (type productId)
+                count (integer)
+            ))
+        )
     )
 )
 
@@ -29,11 +38,14 @@
 (set taxes 0)
 (set total 0)
 
-(for (input)
+(for (input.products)
     (set p (i.id))
 
     (when (lt (p.quantity) (i.count))
         (throw "No hay suficientes existencias de: (p.name)"))
+
+    (when (ne (p.warehouse_id) (input.warehouse_id))
+        (throw "Producto no está en la misma bodega: (p.name)"))
 
     (set i.subtotal (* (p.price) (i.count)))
     (set i.taxes (/ (* (p.tax) (i.subtotal)) 100))
@@ -54,7 +66,7 @@
 
 (set sale_id (db::lastInsertId))
 
-(for (input)
+(for (input.products)
     (set p (i.id))
 
     (db::insert "##sale_details" (&

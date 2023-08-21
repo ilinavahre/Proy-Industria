@@ -3,7 +3,9 @@
     id              "x.sale_id"
     created         "x.created"
     created_by      "c.name"
+    warehouse       "w.name"
     status          "d.user_id"
+    count           "`count`"
     subtotal        "x.subtotal"
     taxes           "x.taxes"
     total           "x.total"
@@ -13,7 +15,7 @@
 
     (shield::field sort
         default-stop "created"
-        pattern `/^(id|created|created_by|status|subtotal|taxes|total)$/`
+        pattern `/^(id|created|created_by|warehouse|status|count|subtotal|taxes|total)$/`
         set (camposOrdenables.($))
     )
 
@@ -45,6 +47,18 @@
         required false
         pattern integer
         set `x.sale_id={$}`
+    )
+
+    (shield::field filter_warehouse
+        required false
+        pattern text
+        set `w.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_status
+        required false
+        pattern bit
+        set `{? {$} "x.cancelled_by IS NOT NULL" "x.cancelled_by IS NULL"}`
     )
 
     (shield::field filter_created_by

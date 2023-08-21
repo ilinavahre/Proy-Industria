@@ -1,17 +1,14 @@
+import { userData } from './signals';
 
 import { Router } from 'riza';
 import { logout } from './actions';
-import { userData } from './signals';
 
 import CuentaDetalles from './panels/cuenta-detalles';
 import CuentaPassword from './panels/cuenta-password';
 
 import Inventario from './panels/inventario/inventario';
 import RecursosHumanos from './panels/rrhh/rrhh';
-
-import VentasVender from './panels/ventas/vender';
-import VentasListar from './panels/ventas/listar';
-import VentasVer from './panels/ventas/ver';
+import Ventas from './panels/ventas/ventas';
 
 function init() {
     Router.refresh();
@@ -33,11 +30,7 @@ export default () =>
                 </div>
 
                 <div>
-                    <b>Ventas</b>
-                    <div>
-                        <a href="#/ventas/vender/">Realizar Venta</a>
-                        <a href="#/ventas/listar/">Ventas</a>
-                    </div>
+                    <a href="#/ventas/pos/crear/">Ventas</a>
                 </div>
 
                 <div>
@@ -64,12 +57,9 @@ export default () =>
             <CuentaDetalles/>
             <CuentaPassword/>
 
-            <RecursosHumanos/>
-            <Inventario/>
-
-            <VentasVender/>
-            <VentasListar/>
-            <VentasVer/>
+            <RecursosHumanos />
+            <Inventario />
+            <Ventas />
 
         </div>
 

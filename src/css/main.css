@@ -149,8 +149,7 @@ r-tabs a.active {
 }
 
 h1 {
-    margin: 0; padding: 0; color: #064153; font-size: 2.0rem; font-weight: 600; margin-bottom: 2rem; margin-top: 1rem;
-    text-transform: uppercase; font-size: 1.2rem; margin: 0; margin-bottom: 1rem;
+    margin: 0; padding: 0; color: #064153; font-size: 1.5rem; font-weight: 200; text-transform: uppercase; margin: 0; margin-bottom: 1rem;
 }
 
 /* ** */

@@ -146,7 +146,6 @@ INSERT INTO ##privileges(name) VALUES
     ('Proveedores'),
     ('Compras'),
     ('Ventas'),
-    ('Tickets'),
     ('Reportes')
 ;
 
