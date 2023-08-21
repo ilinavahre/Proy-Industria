@@ -1,8 +1,8 @@
 
 import { Api } from 'riza';
-import { back } from '../../actions';
-import { Campos, enumCargos } from './crear';
-import { ds as dsCargos } from '../config/cargos/listar';
+import { back } from '../../../actions';
+import { Campos, enumCargos } from '../empleados/crear';
+import { ds as dsCargos } from '../cargos/listar';
 
 let form;
 
@@ -21,7 +21,7 @@ function onShown({ id })
         });
     }
 
-    Api.fetch('empleados/leer', { id }).then(r =>
+    Api.fetch('rrhh/empleados/leer', { id }).then(r =>
     {
         if (r.response != 200 || !r.data.length)
             return back();
@@ -32,15 +32,13 @@ function onShown({ id })
 
 // *********************************************
 export default () => 
-    <r-panel class="flex-fill" data-route="/empleados/editar/:id" onPanelShown={ onShown }>
-
-        <h1>Editar Empleado</h1>
+    <r-panel class="flex-fill" data-route="/rrhh/empleados/editar/:id" onPanelShown={ onShown }>
 
         <div class="buttons">
             <a class="btn alt-1" onClick={ back }><i class="fa-solid fa-arrow-left-long"></i> Regresar</a>
         </div>
 
-        <r-form class="form" data-form-action="empleados.guardar" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
+        <r-form class="form" data-form-action="rrhh.empleados.guardar" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
 
             <input type="hidden" data-field="id" />
 

@@ -53,7 +53,7 @@ export default () =>
                     <th style:width="8rem" data-sort="status"><span>Status</span></th>
                     <th data-sort="supplier"><span>Proveedores</span></th>
                     <th><span>Número de Productos</span></th>
-                    <th style:width="8rem"></th>
+                    <th style:width="9rem"></th>
                 </tr>
             </thead>
 

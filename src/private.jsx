@@ -6,22 +6,12 @@ import { userData } from './signals';
 import CuentaDetalles from './panels/cuenta-detalles';
 import CuentaPassword from './panels/cuenta-password';
 
-import EmpleadosListar from './panels/empleados/listar';
-import EmpleadosCrear from './panels/empleados/crear';
-import EmpleadosEditar from './panels/empleados/editar';
-
 import Inventario from './panels/inventario/inventario';
+import RecursosHumanos from './panels/rrhh/rrhh';
 
 import VentasVender from './panels/ventas/vender';
 import VentasListar from './panels/ventas/listar';
 import VentasVer from './panels/ventas/ver';
-
-import ConfigDepartamentosListar from './panels/config/departamentos/listar';
-import ConfigDepartamentosCrear from './panels/config/departamentos/crear';
-import ConfigDepartamentosEditar from './panels/config/departamentos/editar';
-import ConfigCargosListar from './panels/config/cargos/listar';
-import ConfigCargosCrear from './panels/config/cargos/crear';
-import ConfigCargosEditar from './panels/config/cargos/editar';
 
 function init() {
     Router.refresh();
@@ -35,12 +25,7 @@ export default () =>
 
             <r-tabs data-base-route="/@/">
                 <div>
-                    <b>Recursos Humanos</b>
-                    <div>
-                        <a href="#/config/departamentos/listar/">Departamentos</a>
-                        <a href="#/config/cargos/listar/">Cargos</a>
-                        <a href="#/empleados/listar/">Empleados</a>
-                    </div>
+                    <a href="#/rrhh/empleados/listar/">Recursos Humanos</a>
                 </div>
 
                 <div>
@@ -79,24 +64,13 @@ export default () =>
             <CuentaDetalles/>
             <CuentaPassword/>
 
-            <EmpleadosListar/>
-            <EmpleadosCrear/>
-            <EmpleadosEditar/>
-
+            <RecursosHumanos/>
             <Inventario/>
 
             <VentasVender/>
             <VentasListar/>
             <VentasVer/>
 
-            <ConfigDepartamentosListar/>
-            <ConfigDepartamentosCrear/>
-            <ConfigDepartamentosEditar/>
-
-            <ConfigCargosListar/>
-            <ConfigCargosCrear/>
-            <ConfigCargosEditar/>
- 
         </div>
 
     </r-panel>

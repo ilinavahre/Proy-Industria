@@ -13,7 +13,7 @@ function onShown({ id })
 {
     form.reset();
 
-    Api.fetch('config/cargos/leer', { id }).then(r =>
+    Api.fetch('rrhh/cargos/leer', { id }).then(r =>
     {
         if (r.response != 200 || !r.data.length)
             return back();
@@ -24,15 +24,13 @@ function onShown({ id })
 
 // *********************************************
 export default () => 
-    <r-panel class="flex-fill" data-route="/config/cargos/editar/:id" onPanelShown={ onShown }>
-
-        <h1>Editar Cargo</h1>
+    <r-panel class="flex-fill" data-route="/rrhh/cargos/editar/:id" onPanelShown={ onShown }>
 
         <div class="buttons">
             <a class="btn alt-1" onClick={ back }><i class="fa-solid fa-arrow-left-long"></i> Regresar</a>
         </div>
 
-        <r-form class="form" data-form-action="config.cargos.guardar" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
+        <r-form class="form" data-form-action="rrhh.cargos.guardar" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
 
             <input type="hidden" data-field="id"/>
 

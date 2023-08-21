@@ -1,10 +1,10 @@
 
 import { ModelList } from 'riza';
-import { back } from '../../actions';
-import { MultiSelect } from '../../elems';
-import { enumPrivilegios } from './listar';
-import { ds as dsDepartamentos } from '../config/departamentos/listar';
-import { ds as dsCargos } from '../config/cargos/listar';
+import { back } from '../../../actions';
+import { MultiSelect } from '../../../elems';
+import { enumPrivilegios } from '../empleados/listar';
+import { ds as dsDepartamentos } from '../departamentos/listar';
+import { ds as dsCargos } from '../cargos/listar';
 
 export const enumCargos = new ModelList();
 let form;
@@ -79,15 +79,13 @@ export const Campos = () =>
 
 // *********************************************
 export default () => 
-    <r-panel class="flex-fill" data-route="/empleados/crear/" onPanelShown={ onShown }>
-
-        <h1>Crear Empleado</h1>
+    <r-panel class="flex-fill" data-route="/rrhh/empleados/crear/" onPanelShown={ onShown }>
 
         <div class="buttons">
             <a class="btn alt-1" onClick={ back }><i class="fa-solid fa-arrow-left-long"></i> Regresar</a>
         </div>
 
-        <r-form class="form" data-form-action="empleados.crear" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
+        <r-form class="form" data-form-action="rrhh.empleados.crear" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
 
             <Campos />
 

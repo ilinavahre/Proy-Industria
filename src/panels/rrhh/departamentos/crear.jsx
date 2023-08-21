@@ -33,7 +33,7 @@ export const Campos = () =>
 
 // *********************************************
 export default () => 
-    <r-panel class="flex-fill" data-route="/config/departamentos/crear" onPanelShown={ onShown }>
+    <r-panel class="flex-fill" data-route="/rrhh/departamentos/crear" onPanelShown={ onShown }>
 
         <h1>Crear Departamento</h1>
 
@@ -41,7 +41,7 @@ export default () =>
             <a class="btn alt-1" onClick={ back }><i class="fa-solid fa-arrow-left-long"></i> Regresar</a>
         </div>
 
-        <r-form class="form" data-form-action="config.departamentos.crear" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
+        <r-form class="form" data-form-action="rrhh.departamentos.crear" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
 
             <Campos />
 

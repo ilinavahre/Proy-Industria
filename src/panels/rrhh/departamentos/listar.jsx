@@ -4,7 +4,7 @@ import { quitarFiltros } from '../../../actions';
 import { Paginacion } from '../../../elems';
 import { authStatus } from '../../../signals';
 
-export const ds = new DataSource('config.departamentos', { includeEnum: true });
+export const ds = new DataSource('rrhh.departamentos', { includeEnum: true });
 
 watch([authStatus], (val) =>
 {
@@ -23,19 +23,17 @@ function borrar(id)
     if (!confirm('Esta seguro de borrar este registro?'))
         return;
 
-    Api.fetch('config/departamentos/borrar', { id }).then(r => {
+    Api.fetch('rrhh/departamentos/borrar', { id }).then(r => {
         if (r.response != 200) return alert(r.error);
         ds.refresh();
     });
 }
 
 export default () => 
-    <r-panel class="flex-fill" data-route="/config/departamentos/listar/" onPanelShown={ onShown }>
-
-        <h1>Departamentos</h1>
+    <r-panel class="flex-fill" data-route="/rrhh/departamentos/listar/" onPanelShown={ onShown }>
 
         <Paginacion dataSource={ ds }>
-            <a class="btn alt-1" href="#/config/departamentos/crear/"><i class="fa-solid fa-plus"></i> Crear Departamento</a>
+            <a class="btn alt-1" href="#/rrhh/departamentos/crear/"><i class="fa-solid fa-plus"></i> Crear Departamento</a>
         </Paginacion>
 
         <r-table dataSource={ ds }>
@@ -80,7 +78,7 @@ export default () =>
                     </td>
                     <td>{item.short}</td>
                     <td style:textAlign="center">
-                        <a class="btn-1 btn-blue" href={"#/config/departamentos/editar/"+item.id}><i class="fa-regular fa-pen-to-square"></i></a>
+                        <a class="btn-1 btn-blue" href={"#/rrhh/departamentos/editar/"+item.id}><i class="fa-regular fa-pen-to-square"></i></a>
                         <span class="btn-1 btn-red" onClick={ () => borrar(item.id) }><i class="fa-solid fa-trash-can"></i></span>
                     </td>
                 </tr>

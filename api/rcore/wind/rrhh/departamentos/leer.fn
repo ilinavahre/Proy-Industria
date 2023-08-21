@@ -8,4 +8,4 @@
     )
 )
 
-(call "config.cargos.list")
+(call "rrhh.departamentos.list")

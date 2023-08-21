@@ -1,4 +1,6 @@
 /* ******************************************************************************************* */
+DROP TABLE IF EXISTS ##purchases;
+
 DROP TABLE IF EXISTS ##sale_details;
 DROP TABLE IF EXISTS ##sales;
 

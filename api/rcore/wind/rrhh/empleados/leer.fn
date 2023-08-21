@@ -1,5 +1,5 @@
 
-(sentinel::privilege-required "Administrador, Recursos Humanos")
+(sentinel::privilege-required "Administrador")
 
 (shield::validate
     (shield::field id
@@ -8,4 +8,4 @@
     )
 )
 
-(call "config.departamentos.list")
+(call "rrhh.empleados.list")

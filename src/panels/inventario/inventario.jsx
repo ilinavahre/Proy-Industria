@@ -30,6 +30,8 @@ import ProductosAjustar from './productos/ajustar';
 export default () =>
     <r-panel class="flex-col flex-fill" data-route="/inventario/">
 
+        <h1>Inventario</h1>
+
         <div class="tabs">
             <r-panel data-route="/inventario/productos"> <a href="#/inventario/productos/listar/">Productos en Inventario</a> </r-panel>
             <r-panel data-route="/inventario/compras"> <a href="#/inventario/compras/listar/">Ordenes de Compra</a> </r-panel>

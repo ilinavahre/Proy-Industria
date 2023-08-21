@@ -84,15 +84,13 @@ export const Campos = () =>
 
 // *********************************************
 export default () => 
-    <r-panel class="flex-fill" data-route="/config/cargos/crear" onPanelShown={ onShown }>
-
-        <h1>Crear Cargo</h1>
+    <r-panel class="flex-fill" data-route="/rrhh/cargos/crear" onPanelShown={ onShown }>
 
         <div class="buttons">
             <a class="btn alt-1" onClick={ back }><i class="fa-solid fa-arrow-left-long"></i> Regresar</a>
         </div>
 
-        <r-form class="form" data-form-action="config.cargos.crear" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
+        <r-form class="form" data-form-action="rrhh.cargos.crear" onFormSuccess={ formSuccess } onCreated={ f=>form=f }>
 
             <Campos />
 
