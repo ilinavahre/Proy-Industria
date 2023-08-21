@@ -45,8 +45,14 @@
 
     (shield::field id
         required false
-        pattern integer
-        set `x.product_id={$}`
+        pattern integer-list
+        set `x.product_id IN ({$})`
+    )
+
+    (shield::field code
+        required false
+        pattern identifier-list
+        set `x.code IN ( {join "," {map {split "," {$}} {escape {i}}}} )`
     )
 
     (shield::field filter_id

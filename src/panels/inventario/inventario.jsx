@@ -10,6 +10,8 @@ import ImpuestosEditar from './impuestos/editar';
 import ComprasListar from './compras/listar';
 import ComprasCrear from './compras/crear';
 import ComprasEditar from './compras/editar';
+import ComprasActualizar from './compras/actualizar';
+import ComprasVer from './compras/ver';
 
 import BodegasListar from './bodegas/listar';
 import BodegasCrear from './bodegas/crear';
@@ -49,6 +51,8 @@ export default () =>
             <ComprasListar />
             <ComprasCrear />
             <ComprasEditar />
+            <ComprasActualizar />
+            <ComprasVer />
 
             <BodegasListar />
             <BodegasCrear />

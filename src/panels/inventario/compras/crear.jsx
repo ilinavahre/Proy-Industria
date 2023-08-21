@@ -3,8 +3,8 @@ import { DataSource, signal } from 'riza';
 import { back } from '../../../actions';
 import { ds as dsProveedores } from '../proveedores/listar';
 
-const ds = new DataSource('inventario.productos', { request: { unique: true } });
-const productos = signal([]);
+export const ds = new DataSource('inventario.productos', { request: { unique: true } });
+export const productos = signal([]);
 let form;
 
 function formSuccess(res) {
@@ -17,7 +17,7 @@ function onShown() {
     ds.refresh();
 }
 
-function agregarProducto (codigo) {
+export function agregarProducto (codigo) {
     let item = ds.list.getData().find(p => p.get('code') == codigo);
     if (!item) return;
 
@@ -28,7 +28,7 @@ function agregarProducto (codigo) {
     productos.notify();
 }
 
-function beforeSubmit (data) {
+export function beforeSubmit (data) {
     data.data = JSON.stringify(productos.value.map(p => ({ code: p.code, count: ~~p.count.value })));
 }
 

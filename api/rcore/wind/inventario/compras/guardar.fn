@@ -1,0 +1,38 @@
+
+(sentinel::privilege-required "Administrador, Inventario, Compras")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+        check:record_not_found (isnotnull (db::scalar `SELECT purchase_id FROM ##purchases WHERE is_active=1 AND purchase_id={$}`))
+    )
+)
+
+(shield::validate input
+
+    (shield::field supplier_id
+        required false
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT supplier_id FROM ##suppliers WHERE is_active=1 AND supplier_id={!$}`))
+    )
+
+    (shield::field data
+        json-load ($)
+        required true
+        data (array (object
+            code (string)
+            count (integer)
+        ))
+    )
+)
+
+(for i (input.data)
+    (when (le (i.count) 0)
+        (throw "Cantidad de producto (i.code) debe ser mayor que cero."))
+)
+
+(set input.data (utils::json::stringify (input.data)))
+
+(db::update "##purchases" (& purchase_id (id)) (input))
+(&)

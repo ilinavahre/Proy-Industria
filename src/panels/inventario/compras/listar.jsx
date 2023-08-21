@@ -6,6 +6,14 @@ import { authStatus } from '../../../signals';
 
 export const ds = new DataSource('inventario.compras', { includeEnum: true });
 
+export const enumEstado = [
+    'Pendiente',
+    'Procesada',
+    'Cancelada',
+    'Recibida',
+    'Completada'
+];
+
 watch([authStatus], (val) =>
 {
     if (val !== authStatus.AUTH)
@@ -42,10 +50,10 @@ export default () =>
                 <tr>
                     <th style:width="8rem" data-sort="id"><span>No. de Orden</span></th>
                     <th style:width="11rem" data-sort="created"><span>Creada</span></th>
-                    <th style:width="5rem" data-sort="status"><span>Status</span></th>
+                    <th style:width="8rem" data-sort="status"><span>Status</span></th>
                     <th data-sort="supplier"><span>Proveedores</span></th>
                     <th><span>Número de Productos</span></th>
-                    <th style:width="5rem"></th>
+                    <th style:width="8rem"></th>
                 </tr>
             </thead>
 
@@ -53,7 +61,12 @@ export default () =>
                 <tr>
                     <th><input class="input-small" type="text" data-property="filter_id" /></th>
                     <th><input class="input-small" type="date" data-property="filter_created" /></th>
-                    <th><input class="input-small" type="text" data-property="filter_status" /></th>
+                    <th>
+                        <select class="input-small" data-property="filter_status">
+                            <option value="">(Todos)</option>
+                            { enumEstado.map((v, i) => <option value={i}>{v}</option>) }
+                        </select>
+                    </th>
                     <th><input class="input-small" type="text" data-property="filter_supplier" /></th>
                     <th></th>
                     <th style:textAlign="center">
@@ -74,12 +87,14 @@ export default () =>
                 <tr>
                     <td>{item.id}</td>
                     <td>{item.s_created}</td>
-                    <td>{item.status}</td>
+                    <td>{enumEstado[item.status]}</td>
                     <td>{item.supplier}</td>
                     <td>{item.count}</td>
                     <td style:textAlign="center">
-                        <a class="btn-1 btn-blue" href={"#/inventario/compras/editar/"+item.id}><i class="fa-regular fa-pen-to-square"></i></a>
-                        <span class="btn-1 btn-red" onClick={ () => borrar(item.id) }><i class="fa-solid fa-trash-can"></i></span>
+                        <a class="btn-1 btn-blue" class:xx-hidden={ item.status != 0 } href={"#/inventario/compras/editar/"+item.id}><i class="fa-regular fa-pen-to-square"></i></a>
+                        <a class="btn-1 btn-blue" href={"#/inventario/compras/ver/"+item.id}><i class="fa-regular fa-eye"></i></a>
+                        <a class="btn-1 btn-gray" class:xx-hidden={ item.status == 2 || item.status == 4 } href={"#/inventario/compras/actualizar/"+item.id}><i class="fa-solid fa-arrow-right-arrow-left"></i></a>
+                        <span class="btn-1 btn-red" class:xx-hidden={ item.status != 0 } onClick={ () => borrar(item.id) }><i class="fa-solid fa-trash-can"></i></span>
                     </td>
                 </tr>
             }>

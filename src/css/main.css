@@ -266,7 +266,7 @@ table th {
 }
 
 table td {
-    border-bottom: 1px solid #ccc; padding: 0.1rem 0.5rem;
+    border-bottom: 1px solid #ccc; padding: 0.5rem 0.5rem;
 }
 
 table tbody tr:hover td {

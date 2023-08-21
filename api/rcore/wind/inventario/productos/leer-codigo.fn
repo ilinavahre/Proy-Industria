@@ -2,9 +2,9 @@
 (sentinel::privilege-required "Administrador, Inventario")
 
 (shield::validate
-    (shield::field id
+    (shield::field code
         required true
-        pattern integer-list
+        pattern identifier-list
     )
 )
 
