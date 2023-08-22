@@ -1,4 +1,4 @@
-CHDIR ../../../..
+CHDIR ../..
 LIVE {path::cwd}
 
 ECHO Cargando desde GitHub ...
@@ -37,7 +37,7 @@ ECHO Copiando a live ...
 	DIRCOPY {LIVE}
 
 ECHO Configurando ...
-	r0 prod
+	r0 live
 	WRITE {LIVE}/api/rose-env
 
 ECHO Limpiando ...

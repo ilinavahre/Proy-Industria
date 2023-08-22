@@ -12,7 +12,7 @@
 (import "lib/deploy")
 
 (try
-    (execute "rcore/wind/setup/pull.deploy")
+    (execute "rcore/live.deploy")
 catch
     (echo "Error: (err)")
 )
