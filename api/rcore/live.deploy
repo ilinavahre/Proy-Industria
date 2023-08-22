@@ -1,5 +1,6 @@
 CHDIR ../..
 LIVE {path::cwd}
+PUTENV COREPACK_HOME=/home/bitnami/.corepack
 
 ECHO Cargando desde GitHub ...
     RMDIR staging
@@ -39,6 +40,9 @@ ECHO Copiando a live ...
 ECHO Configurando ...
 	r0 live
 	WRITE {LIVE}/api/rose-env
+    r0 /gse/api/
+    r1 /api/
+    REPLACE {LIVE}/api/.htaccess
 
 ECHO Limpiando ...
 	RMDIR {LIVE}/api/@local
