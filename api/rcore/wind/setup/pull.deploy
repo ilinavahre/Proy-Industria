@@ -1,0 +1,52 @@
+CHDIR ../../../..
+LIVE {path::append {path::cwd} "live"}
+
+ECHO Cargando desde GitHub ...
+    RMDIR staging
+    EXEC git clone "https://github.com/ilinavahre/Proy-Industria" "staging"
+    CHDIR staging
+
+ECHO Instalando dependencias back-end ...
+    CHDIR api
+    EXEC composer install
+    IF {errorlevel}
+        ECHO Error {errorlevel}
+        STOP
+    END-IF
+
+ECHO Instalando dependencias front-end ...
+    CHDIR ..
+    EXEC pnpm install
+    IF {errorlevel}
+        ECHO Error {errorlevel}
+        STOP
+    END-IF
+
+ECHO Building ...
+    EXEC pnpm build
+    IF {errorlevel}
+        ECHO Error {errorlevel}
+        STOP
+    END-IF
+
+ECHO Copiando a live ...
+    CLEAN {LIVE}
+	r0 ./api
+	DIRCOPY {LIVE}/api
+	r0 ./dist
+	DIRCOPY {LIVE}
+
+ECHO Configurando ...
+	r0 prod
+	WRITE {LIVE}/api/rose-env
+
+ECHO Limpiando ...
+	RMDIR {LIVE}/api/@local
+	RMDIR {LIVE}/api/logs
+	RMDIR {LIVE}/api/volatile
+	DEL {LIVE}/api/composer.lock
+	DEL {LIVE}/api/composer.json
+    CHDIR ..
+    RMDIR staging
+
+ECHO Completado
