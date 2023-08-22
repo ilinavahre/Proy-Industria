@@ -9,7 +9,7 @@
         x.unit_id id,
         x.created,
         x.instance_id,
-        i.name instance,
+        IFNULL(i.name, '(Default)') instance,
 
         x.is_visible,
         x.name,

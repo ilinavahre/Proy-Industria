@@ -10,7 +10,7 @@
     SELECT
         x.user_id id,
         x.instance_id,
-        i.name instance,
+        IFNULL(i.name, '(Default)') instance,
         x.created,
         x.is_authorized,
         x.username,

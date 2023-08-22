@@ -11,7 +11,7 @@
         x.sale_id id,
         x.created,
         x.instance_id,
-        i.name instance,
+        IFNULL(i.name, '(Default)') instance,
 
         c.name created_by,
         x.cancelled,

@@ -12,6 +12,9 @@
     )
 )
 
+(set instance_filter (db::scalar `SELECT instance_id FROM ##users WHERE user_id={id}`))
+(set instance_filter (? (instance_filter) " AND x.instance_id=(instance_filter)" " AND x.instance_id IS NULL"))
+
 (shield::validate input
 
     (shield::field is_authorized

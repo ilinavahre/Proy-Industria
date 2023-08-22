@@ -9,7 +9,7 @@
         x.warehouse_id id,
         x.created,
         x.instance_id,
-        i.name instance,
+        IFNULL(i.name, '(Default)') instance,
 
         x.name,
         x.address1,

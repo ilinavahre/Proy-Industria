@@ -9,7 +9,7 @@
         x.contact_id id,
         x.created,
         x.instance_id,
-        i.name instance,
+        IFNULL(i.name, '(Default)') instance,
 
         x.first_name,
         x.middle_name,
