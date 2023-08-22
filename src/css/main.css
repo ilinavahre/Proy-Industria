@@ -82,7 +82,7 @@ button.alt {
 /* ** */
 .sidebar {
     width: 16rem; margin: 1rem; border-radius: 0.5rem; padding: 0.5rem;
-    background: #fff; box-shadow: 0 0 1rem #aaa; flex: 0 0 auto;
+    background: #fff; box-shadow: 0 0 1rem #aaa; flex: 0 0 auto; overflow-y: auto;
 }
 
 .sidebar > img {

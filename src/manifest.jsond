@@ -1,0 +1,8 @@
+{
+	"short_name": "Grand Super ERP",
+	"name": "GSE",
+	"display": "fullscreen",
+	"orientation": "landscape-primary",
+	"background_color": "#ffffff",
+	"start_url": "index.html"
+}
