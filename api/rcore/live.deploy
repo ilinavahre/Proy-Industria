@@ -1,6 +1,7 @@
 CHDIR ../..
 LIVE {path::cwd}
 PUTENV COREPACK_HOME=/home/bitnami/.corepack
+PUTENV PNPM_HOME=/home/bitnami/.pnpm
 
 ECHO Cargando desde GitHub ...
     RMDIR staging
@@ -51,6 +52,6 @@ ECHO Limpiando ...
 	DEL {LIVE}/api/composer.lock
 	DEL {LIVE}/api/composer.json
     CHDIR ..
-    RMDIR staging
+    EXEC rm -rf staging
 
 ECHO Completado
