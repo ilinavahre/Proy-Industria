@@ -66,7 +66,7 @@
 
 		case CLEAN
 			(for i (dir::files (val null))
-                (file::remove (i.name)))
+                (file::remove (i.path)))
 
 		case DEL
 			(file::remove (val ""))

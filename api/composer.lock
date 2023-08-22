@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "rsthn/rose-core",
-            "version": "4.0.66",
+            "version": "4.0.67",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rsthn/rose-core.git",
-                "reference": "e3b6acf24bee5f3f0efd710e0b4f3df8c8916dfd"
+                "reference": "ca497a6fafde0317c1c11852d61943507246decd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rsthn/rose-core/zipball/e3b6acf24bee5f3f0efd710e0b4f3df8c8916dfd",
-                "reference": "e3b6acf24bee5f3f0efd710e0b4f3df8c8916dfd",
+                "url": "https://api.github.com/repos/rsthn/rose-core/zipball/ca497a6fafde0317c1c11852d61943507246decd",
+                "reference": "ca497a6fafde0317c1c11852d61943507246decd",
                 "shasum": ""
             },
             "require": {
@@ -44,9 +44,9 @@
             "homepage": "https://github.com/rsthn/rose-core",
             "support": {
                 "issues": "https://github.com/rsthn/rose-core/issues",
-                "source": "https://github.com/rsthn/rose-core/tree/v4.0.66"
+                "source": "https://github.com/rsthn/rose-core/tree/v4.0.67"
             },
-            "time": "2023-08-02T20:12:54+00:00"
+            "time": "2023-08-22T21:33:47+00:00"
         },
         {
             "name": "rsthn/rose-ext-csv",
