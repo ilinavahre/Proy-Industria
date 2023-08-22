@@ -9,7 +9,18 @@
 (sentinel::auth-required)
 (sentinel::reload)
 
-(set data (map-get (# user_id created username photo name email privileges) (session.user)))
+(if (isnull (session.user.instance_id))
+    (set session.user.instance_id (db::scalar `SELECT instance_id FROM ##instances WHERE is_active=1 AND user_id={session.user.user_id}`)))
+
+(set data (map-get (# user_id instance_id created username photo name email privileges) (session.user)))
 (set data.photo_url (utils::getPictureUrl (data.photo)))
+
+(if (isnull (data.instance_id))
+    (set data.company_logo_url "img/logo-200.png")
+    (set data.company_name "Grand Super ERP")
+else
+    (set data.company_logo_url (utils::getPictureUrl (db::scalar `SELECT company_logo FROM ##instances WHERE instance_id={data.instance_id}`)))
+    (set data.company_name (db::scalar `SELECT company_name FROM ##instances WHERE instance_id={data.instance_id}`))
+)
 
 (data)

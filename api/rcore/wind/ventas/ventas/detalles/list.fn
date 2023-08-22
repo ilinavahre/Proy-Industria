@@ -18,6 +18,7 @@
         x.subtotal + x.taxes total
 
     FROM ##sale_details x
+    INNER JOIN ##sales s ON s.sale_id=x.sale_id
     INNER JOIN ##products p ON p.product_id=x.product_id
 
     WHERE {filters}

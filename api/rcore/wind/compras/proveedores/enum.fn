@@ -1,0 +1,14 @@
+
+(sentinel::privilege-required "Administrador, Proveedores")
+
+(call "@filters")
+
+(db::table `
+    SELECT
+        x.supplier_id id,
+        x.name label
+
+    FROM ##suppliers x
+    WHERE x.is_active=1 {instance_filter}
+    ORDER BY x.name ASC
+`)

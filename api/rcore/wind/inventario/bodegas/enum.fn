@@ -1,12 +1,14 @@
 
 (sentinel::privilege-required "Administrador, Inventario")
 
+(call "@filters")
+
 (db::table `
     SELECT
         x.warehouse_id id,
         x.name label
 
     FROM ##warehouses x
-    WHERE x.is_active=1
+    WHERE x.is_active=1 {instance_filter}
     ORDER BY x.name ASC
 `)

@@ -1,11 +1,13 @@
 
 (sentinel::privilege-required "Administrador, Inventario")
 
+(call "@filters")
+
 (shield::validate
     (shield::field id
         required true
         pattern integer
-        check:record_not_found (isnotnull (db::scalar `SELECT unit_id FROM ##units WHERE is_active=1 AND unit_id={$}`))
+        check:record_not_found (isnotnull (db::scalar `SELECT unit_id FROM ##units x WHERE is_active=1 AND unit_id={$} {instance_filter}`))
     )
 )
 
@@ -19,13 +21,13 @@
     (shield::field name
         required false
         pattern text
-        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE unit_id!={id} AND is_active=1 AND name={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units x WHERE unit_id!={id} AND is_active=1 AND name={!$} {instance_filter}`))
     )
 
     (shield::field short
         required false
         pattern text
-        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE unit_id!={id} AND is_active=1 AND short={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units x WHERE unit_id!={id} AND is_active=1 AND short={!$} {instance_filter}`))
     )
 )
 

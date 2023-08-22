@@ -1,0 +1,32 @@
+
+(sentinel::privilege-required "Super")
+
+(import "lib/utils" as "utils")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.instance_id id,
+        x.created,
+        x.status,
+        x.name,
+        x.company_name,
+        x.company_logo,
+        x.user_id,
+        u.username admin_username
+
+    FROM ##instances x
+    INNER JOIN ##users u ON u.user_id=x.user_id
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+    (set i.s_status (strings.enum.instance_status.(i.status)))
+    (set i.company_logo_url (utils::getPictureUrl (i.company_logo)))
+)

@@ -1,7 +1,7 @@
 
 import { Api } from 'riza';
 import { back } from '../../../actions';
-import { Campos } from './crear';
+import { Campos } from '../impuestos/crear';
 
 let form;
 

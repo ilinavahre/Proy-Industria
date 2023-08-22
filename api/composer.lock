@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "464e8cd059cbc29d53ec9cbf0bf14606",
+    "content-hash": "b1147326e6a59a4223a81c60432d9827",
     "packages": [
         {
             "name": "rsthn/rose-core",
@@ -47,6 +47,49 @@
                 "source": "https://github.com/rsthn/rose-core/tree/v4.0.66"
             },
             "time": "2023-08-02T20:12:54+00:00"
+        },
+        {
+            "name": "rsthn/rose-ext-csv",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rsthn/rose-ext-csv.git",
+                "reference": "7116bff959a73805da243c1d4e1059e65dccb2bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rsthn/rose-ext-csv/zipball/7116bff959a73805da243c1d4e1059e65dccb2bb",
+                "reference": "7116bff959a73805da243c1d4e1059e65dccb2bb",
+                "shasum": ""
+            },
+            "require": {
+                "rsthn/rose-extension-installer": "*"
+            },
+            "type": "rose-extension",
+            "extra": {
+                "rose-ext-identifier": "Csv"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rose\\Ext\\Csv\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Palencia",
+                    "email": "strikeone88@rsthn.com"
+                }
+            ],
+            "description": "CSV Utilities for Rose",
+            "support": {
+                "issues": "https://github.com/rsthn/rose-ext-csv/issues",
+                "source": "https://github.com/rsthn/rose-ext-csv/tree/v1.0.6"
+            },
+            "time": "2023-06-06T22:13:34+00:00"
         },
         {
             "name": "rsthn/rose-ext-sentinel",

@@ -1,0 +1,50 @@
+
+(sentinel::privilege-required "Administrador, Compras")
+
+(call "@filters")
+
+(shield::validate input
+
+    (shield::field instance_id
+        set (session.user.instance_id)
+    )
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field supplier_id
+        required true
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT supplier_id FROM ##suppliers x WHERE is_active=1 AND supplier_id={!$} {instance_filter}`))
+    )
+
+    (shield::field warehouse_id
+        required true
+        pattern integer
+        check:invalid (isnotnull (db::scalar `SELECT warehouse_id FROM ##warehouses x WHERE is_active=1 AND warehouse_id={!$} {instance_filter}`))
+    )
+
+    (shield::field data
+        json-load ($)
+        required true
+        data (array (object
+            code (string)
+            count (integer)
+        ))
+    )
+)
+
+(when (eq 0 (input.data.length))
+    (throw "Por favor seleccionar al menos un producto para la orden de compra.")
+)
+
+(for i (input.data)
+    (when (le (i.count) 0)
+        (throw "Cantidad de producto (i.code) \((db::scalar `SELECT name FROM ##products WHERE code={!i.code} LIMIT 1`)\) debe ser mayor que cero."))
+)
+
+(set input.data (utils::json::stringify (input.data)))
+
+(db::insert "##purchases" (input))
+(&)

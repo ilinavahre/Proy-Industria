@@ -1,0 +1,91 @@
+
+(sentinel::privilege-required "Administrador, Clientes")
+
+(call "@filters")
+
+(shield::begin)
+
+(shield::validate input
+
+    (shield::field instance_id
+        set (session.user.instance_id)
+    )
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field first_name
+        required true
+        pattern text
+    )
+    (shield::field middle_name
+        required false
+        pattern text
+    )
+    (shield::field last_name
+        required true
+        pattern text
+    )
+    (shield::field birthdate
+        required false
+        pattern date
+    )
+
+    (shield::field gender
+        required false
+        pattern letter
+    )
+
+    (shield::field address1
+        required false
+        pattern text
+    )
+    (shield::field address2
+        required false
+        pattern text
+    )
+    (shield::field city
+        required false
+        pattern text
+    )
+    (shield::field state
+        required false
+        pattern text
+    )
+
+    (shield::field email
+        required false
+        pattern email
+    )
+    (shield::field phone
+        required false
+        pattern phone
+    )
+
+    (shield::field can_email
+        required false
+        pattern bit
+    )
+    (shield::field can_call
+        required false
+        pattern bit
+    )
+    (shield::field can_sms
+        required false
+        pattern bit
+    )
+    (shield::field can_whatsapp
+        required false
+        pattern bit
+    )
+    (shield::field can_telegram
+        required false
+        pattern bit
+    )
+)
+
+(shield::end)
+
+(db::insert "##contacts" (input))
+(&)

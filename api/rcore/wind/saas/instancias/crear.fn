@@ -1,0 +1,64 @@
+
+(sentinel::privilege-required "Super")
+
+(import "lib/utils" as "utils")
+
+(shield::validate input
+
+    (shield::field created
+        set (datetime::now)
+    )
+
+    (shield::field name
+        required true
+        pattern text
+    )
+
+    (shield::field company_name
+        required true
+        pattern text
+    )
+    (shield::field company_logo
+        required true
+        ignore true
+    )
+
+    (shield::field admin_username
+        required true
+        pattern identifier
+        check:admin_username (isnull (db::scalar `SELECT 1 FROM ##users WHERE is_active=1 AND instance_id IS NULL AND username={!$}`))
+    )
+    (shield::field admin_password
+        required true
+        pattern text
+    )
+
+    (shield::field status
+        required true
+        pattern integer
+    )
+)
+
+(db::insert "##users" (&
+    created (datetime::now)
+    username (input.admin_username)
+    password (sentinel::password (input.admin_password))
+    name (input.name)
+))
+(set user_id (db::lastInsertId))
+(db::insert "##user_privileges" (&
+    user_id (user_id)
+    privilege_id (db::scalar `SELECT privilege_id FROM ##privileges WHERE name="Administrador"`)
+))
+
+(db::insert "##instances" (&
+    created (datetime::now)
+    status (input.status)
+    name (input.name)
+    company_name (input.company_name)
+    user_id (user_id)
+))
+(set id (db::lastInsertId))
+(utils::updatePicture (gateway.request) "company_logo" (id) "##instances" "instance_id" "company_logo" 320 256)
+
+(&)

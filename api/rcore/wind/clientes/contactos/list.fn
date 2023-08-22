@@ -1,0 +1,43 @@
+
+(sentinel::privilege-required "Administrador, Clientes")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.contact_id id,
+        x.created,
+        x.instance_id,
+        i.name instance,
+
+        x.first_name,
+        x.middle_name,
+        x.last_name,
+        x.birthdate,
+        x.gender,
+        x.address1,
+        x.address2,
+        x.city,
+        x.state,
+        x.email,
+        x.phone,
+        x.can_email,
+        x.can_call,
+        x.can_sms,
+        x.can_whatsapp,
+        x.can_telegram,
+        x.status
+
+    FROM ##contacts x
+    LEFT JOIN ##instances i ON i.instance_id=x.instance_id
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+    (set i.s_status (strings.enum.contact_status.(i.status)))
+)

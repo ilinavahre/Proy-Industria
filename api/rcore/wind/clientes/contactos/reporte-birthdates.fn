@@ -1,0 +1,41 @@
+
+(sentinel::privilege-required "Administrador, Clientes")
+
+(call "@filters")
+
+(set list (db::table `
+    SELECT
+        x.contact_id id,
+        x.created,
+        i.name instance,
+
+        x.first_name,
+        x.middle_name,
+        x.last_name,
+        x.birthdate,
+        x.gender,
+        x.address1,
+        x.address2,
+        x.city,
+        x.state,
+        x.email,
+        x.phone,
+        x.can_email,
+        x.can_call,
+        x.can_sms,
+        x.can_whatsapp,
+        x.can_telegram,
+        x.status
+
+    FROM ##contacts x
+    LEFT JOIN ##instances i ON i.instance_id=x.instance_id
+    WHERE x.is_active=1 {instance_filter}
+
+    ORDER BY x.birthdate ASC
+`))
+
+(csv::header (map::keys (list.0)))
+(csv::rows (list))
+
+(set now (datetime::now))
+(csv::dump "Cumpleañeros (strings.enum.month.(now.month)) (now.year).csv")

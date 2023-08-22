@@ -1,0 +1,120 @@
+
+(set camposOrdenables (&
+    id              "x.contact_id"
+    created         "x.created"
+    first_name      "x.first_name"
+    middle_name     "x.middle_name"
+    last_name       "x.last_name"
+    birthdate       "x.birthdate"
+    gender          "x.gender"
+    address         "x.address1"
+    city            "x.city"
+    state           "x.state"
+    email           "x.email"
+    phone           "x.phone"
+))
+
+(shield::validate
+
+    (shield::field sort
+        default-stop "created"
+        pattern `/^(id|created|first_name|middle_name|last_name|birthdate|gender|address|city|state|email|phone)$/`
+        set (camposOrdenables.($))
+    )
+
+    (shield::field order
+        default-stop "desc"
+        pattern `/^(asc|desc)$/`
+    )
+)
+
+(shield::validate
+    (shield::field instance_filter
+        set (? (sentinel::has-privilege "Super") "" "AND x.instance_id=(session.user.instance_id)")
+    )
+)
+
+(shield::validate filters
+
+    (shield::field instance_filter
+        ignore (sentinel::has-privilege "Super")
+        set "x.instance_id=(session.user.instance_id)"
+    )
+
+    (shield::field filter_is_active
+        set "x.is_active=1"
+    )
+
+    (shield::field filter_created
+        required false
+        pattern date
+        set `DATE(x.created)={!$}`
+    )
+
+    (shield::field id
+        required false
+        pattern integer
+        set `x.contact_id={$}`
+    )
+
+    (shield::field filter_id
+        required false
+        pattern integer
+        set `x.contact_id={$}`
+    )
+
+    (shield::field filter_first_name
+        required false
+        pattern text
+        set `x.first_name LIKE {escape {str % {$} %}}`
+    )
+    (shield::field filter_middle_name
+        required false
+        pattern text
+        set `x.middle_name LIKE {escape {str % {$} %}}`
+    )
+    (shield::field filter_last_name
+        required false
+        pattern text
+        set `x.last_name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_gender
+        required false
+        pattern letter
+		set `x.gender={!$}`
+    )
+
+    (shield::field filter_address
+        required false
+        pattern text
+		set `(x.address1 LIKE {escape {str % {$} %}} OR x.address2 LIKE {escape {str % {$} %}})`
+    )
+
+    (shield::field filter_city
+        required false
+        pattern text
+        set `x.city LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_state
+        required false
+        pattern text
+        set `x.state LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_email
+        required false
+        pattern text
+        set `x.email LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_phone
+        required false
+        pattern text
+        set `x.phone LIKE {escape {str % {$} %}}`
+    )
+
+)
+
+(set filters (str `(` (join " AND " (values (filters))) `)`))

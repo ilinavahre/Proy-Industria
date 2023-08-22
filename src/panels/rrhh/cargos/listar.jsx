@@ -42,6 +42,7 @@ export default () =>
                 <tr>
                     <th style:width="3rem" data-sort="id"><span>ID</span></th>
                     <th style:width="11rem" data-sort="created"><span>Creado</span></th>
+                    <th data-sort="instance"><span>Instancia</span></th>
                     <th data-sort="department"><span>Departamento</span></th>
                     <th data-sort="name"><span>Nombre</span></th>
                     <th data-sort="salary"><span>Salario Base</span></th>
@@ -56,6 +57,7 @@ export default () =>
                 <tr>
                     <th><input class="input-small" type="text" data-property="filter_id" /></th>
                     <th><input class="input-small" type="date" data-property="filter_created" /></th>
+                    <th><input class="input-small" type="date" data-property="filter_instance" /></th>
                     <th><input class="input-small" type="text" data-property="filter_department" /></th>
                     <th><input class="input-small" type="text" data-property="filter_name" /></th>
                     <th><input class="input-small" type="text" data-property="filter_salary" /></th>
@@ -72,7 +74,7 @@ export default () =>
 
             <tbody className="x-empty">
                 <tr>
-                    <td colSpan="9">No hay registros que mostrar.</td>
+                    <td colSpan="10">No hay registros que mostrar.</td>
                 </tr>
             </tbody>
 
@@ -80,6 +82,7 @@ export default () =>
                 <tr>
                     <td>{item.id}</td>
                     <td>{item.s_created}</td>
+                    <td>{item.instance}</td>
                     <td>{item.department}</td>
                     <td>
                         { !item.is_visible ? <i class="fa-regular fa-eye-slash"></i> : '' }

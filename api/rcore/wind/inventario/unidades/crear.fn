@@ -2,10 +2,15 @@
 (sentinel::privilege-required "Administrador, Inventario")
 
 (import "lib/utils" as "utils")
+(call "@filters")
 
 (shield::begin)
 
 (shield::validate input
+
+    (shield::field instance_id
+        set (session.user.instance_id)
+    )
 
     (shield::field created
         set (datetime::now)
@@ -19,13 +24,13 @@
     (shield::field name
         required true
         pattern text
-        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE is_active=1 AND name={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units x WHERE is_active=1 AND name={!$} {instance_filter}`))
     )
 
     (shield::field short
         required true
         pattern text
-        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units WHERE is_active=1 AND short={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT unit_id FROM ##units x WHERE is_active=1 AND short={!$} {instance_filter}`))
     )
 
 )

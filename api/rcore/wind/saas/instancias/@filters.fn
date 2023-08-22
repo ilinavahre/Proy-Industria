@@ -1,0 +1,74 @@
+
+(set camposOrdenables (&
+    id              "x.instance_id"
+    created         "x.created"
+    status          "x.status"
+    name            "x.name"
+    company_name    "x.company_name"
+    admin_username  "u.username"
+))
+
+(shield::validate
+
+    (shield::field sort
+        default-stop "created"
+        pattern `/^(id|created|status|name|company_name|admin_username)$/`
+        set (camposOrdenables.($))
+    )
+
+    (shield::field order
+        default-stop "desc"
+        pattern `/^(asc|desc)$/`
+    )
+)
+
+(shield::validate filters
+
+    (shield::field filter_is_active
+        set "x.is_active=1"
+    )
+
+    (shield::field filter_created
+        required false
+        pattern date
+        set `DATE(x.created)={!$}`
+    )
+
+    (shield::field id
+        required false
+        pattern integer
+        set `x.instance_id={$}`
+    )
+
+    (shield::field filter_id
+        required false
+        pattern integer
+        set `x.instance_id={$}`
+    )
+
+    (shield::field filter_name
+        required false
+        pattern text
+        set `x.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_company_name
+        required false
+        pattern text
+        set `x.company_name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_admin_username
+        required false
+        pattern text
+        set `u.username LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_status
+        required false
+        pattern integer
+		set `x.status={!$}`
+    )
+)
+
+(set filters (str `(` (join " AND " (values (filters))) `)`))

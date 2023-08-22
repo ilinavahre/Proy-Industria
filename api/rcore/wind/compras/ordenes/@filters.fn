@@ -1,0 +1,78 @@
+
+(set camposOrdenables (&
+    id         		"x.purchase_id"
+    created         "x.created"
+    status          "x.status"
+    supplier      	"s.name"
+    warehouse      	"w.name"
+))
+
+(shield::validate
+
+    (shield::field sort
+        default-stop "created"
+        pattern `/^(id|created|status|supplier|warehouse)$/`
+        set (camposOrdenables.($))
+    )
+
+    (shield::field order
+        default-stop "desc"
+        pattern `/^(asc|desc)$/`
+    )
+)
+
+(shield::validate
+    (shield::field instance_filter
+        set (? (sentinel::has-privilege "Super") "" "AND x.instance_id=(session.user.instance_id)")
+    )
+)
+
+(shield::validate filters
+
+    (shield::field instance_filter
+        ignore (sentinel::has-privilege "Super")
+        set "x.instance_id=(session.user.instance_id)"
+    )
+
+    (shield::field filter_is_active
+        set "x.is_active=1"
+    )
+
+    (shield::field filter_created
+        required false
+        pattern date
+        set `DATE(x.created)={!$}`
+    )
+
+    (shield::field id
+        required false
+        pattern integer
+        set `x.purchase_id={$}`
+    )
+
+    (shield::field filter_id
+        required false
+        pattern integer
+        set `x.purchase_id={$}`
+    )
+
+    (shield::field filter_status
+        required false
+        pattern integer
+		set `x.status={$}`
+    )
+
+    (shield::field filter_supplier
+        required false
+        pattern text
+        set `s.name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_warehouse
+        required false
+        pattern text
+        set `w.name LIKE {escape {str % {$} %}}`
+    )
+)
+
+(set filters (str `(` (join " AND " (values (filters))) `)`))

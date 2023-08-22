@@ -4,7 +4,7 @@ import VentasVentasListar from './ventas/listar';
 import VentasVentasVer from './ventas/ver';
 
 export default () =>
-    <r-panel class="flex-col flex-fill" data-route="/ventas/">
+    <r-panel class="flex-col flex-fill" data-route="/ventas/" data-priv="ventas">
 
         <h1>Ventas</h1>
 

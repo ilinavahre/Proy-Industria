@@ -2,10 +2,15 @@
 (sentinel::privilege-required "Administrador")
 
 (import "lib/utils" as "utils")
+(call "@filters")
 
 (shield::begin)
 
 (shield::validate input
+
+    (shield::field instance_id
+        set (session.user.instance_id)
+    )
 
     (shield::field created
         set (datetime::now)
@@ -19,13 +24,13 @@
     (shield::field username
         required true
         pattern identifier
-        check:record_exists (isnull (db::scalar `SELECT user_id FROM ##users WHERE is_active=1 AND username={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT user_id FROM ##users x WHERE is_active=1 AND username={!$} {instance_filter}`))
     )
 
     (shield::field position_id
         required true
         pattern integer
-        check:invalid (isnotnull (db::scalar `SELECT position_id FROM ##positions WHERE is_active=1 AND position_id={$}`))
+        check:invalid (isnotnull (db::scalar `SELECT position_id FROM ##positions x WHERE is_active=1 AND position_id={$} {instance_filter}`))
     )
 
     (shield::field password

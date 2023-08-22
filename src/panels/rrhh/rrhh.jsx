@@ -12,7 +12,7 @@ import CargosCrear from './cargos/crear';
 import CargosEditar from './cargos/editar';
 
 export default () =>
-    <r-panel class="flex-col flex-fill" data-route="/rrhh/">
+    <r-panel class="flex-col flex-fill" data-route="/rrhh/" data-priv="rrhh">
 
         <h1>Recursos Humanos</h1>
 

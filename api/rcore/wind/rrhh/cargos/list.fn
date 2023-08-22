@@ -10,6 +10,8 @@
     SELECT
         x.position_id id,
         x.created,
+        x.instance_id,
+        i.name instance,
         x.is_visible,
         x.name,
 		x.department_id,
@@ -25,6 +27,7 @@
 
     FROM ##positions x
     INNER JOIN ##departments d ON d.is_active=1 AND d.department_id=x.department_id
+    LEFT JOIN ##instances i ON i.instance_id=x.instance_id
 
     WHERE {filters}
 

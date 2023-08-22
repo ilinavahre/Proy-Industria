@@ -1,0 +1,47 @@
+
+(sentinel::privilege-required "Administrador, Proveedores")
+
+(call "@filters")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+        check:record_not_found (isnotnull (db::scalar `SELECT supplier_id FROM ##suppliers x WHERE is_active=1 AND supplier_id={$} {instance_filter}`))
+    )
+)
+
+(shield::validate input
+
+    (shield::field name
+        required false
+        pattern text
+        check:record_exists (isnull (db::scalar `SELECT supplier_id FROM ##suppliers x WHERE supplier_id!={id} AND is_active=1 AND name={!$} {instance_filter}`))
+    )
+
+    (shield::field is_visible
+        required false
+        pattern bit
+    )
+
+    (shield::field city
+        required false
+        pattern text
+    )
+    (shield::field state
+        required false
+        pattern text
+    )
+
+    (shield::field email
+        required false
+        pattern email
+    )
+    (shield::field phone
+        required false
+        pattern phone
+    )
+)
+
+(db::update "##suppliers" "supplier_id=(id)" (input))
+(&)

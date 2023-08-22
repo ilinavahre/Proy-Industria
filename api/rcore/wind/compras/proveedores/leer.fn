@@ -1,0 +1,11 @@
+
+(sentinel::privilege-required "Administrador, Proveedores")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+    )
+)
+
+(call "compras.proveedores.list")

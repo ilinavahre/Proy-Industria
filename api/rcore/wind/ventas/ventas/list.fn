@@ -10,6 +10,9 @@
     SELECT
         x.sale_id id,
         x.created,
+        x.instance_id,
+        i.name instance,
+
         c.name created_by,
         x.cancelled,
         d.name cancelled_by,
@@ -25,6 +28,7 @@
     LEFT JOIN ##sale_details sd ON sd.sale_id=x.sale_id
     LEFT JOIN ##products p ON p.product_id=sd.product_id
     LEFT JOIN ##warehouses w ON w.warehouse_id=p.warehouse_id
+    LEFT JOIN ##instances i ON i.instance_id=x.instance_id
 
     WHERE {filters}
     GROUP BY x.sale_id

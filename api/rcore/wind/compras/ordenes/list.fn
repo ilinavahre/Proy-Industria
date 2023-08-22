@@ -1,0 +1,40 @@
+
+(sentinel::privilege-required "Administrador, Compras")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.purchase_id id,
+        x.created,
+        x.instance_id,
+        i.name instance,
+
+        x.supplier_id,
+        s.name supplier,
+        x.warehouse_id,
+        w.name warehouse,
+        x.status,
+        x.data
+
+    FROM ##purchases x
+    INNER JOIN ##suppliers s ON s.is_active=1 AND s.supplier_id=x.supplier_id
+    LEFT JOIN ##warehouses w ON w.is_active=1 AND w.warehouse_id=x.warehouse_id
+    LEFT JOIN ##instances i ON i.instance_id=x.instance_id
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+    (set i.data (utils::json::parse (i.data)))
+
+    (set i.count (len (i.data)))
+
+    (set total 0)
+    (for j (i.data) (inc total (j.count)))
+    (set i.total (total))
+)

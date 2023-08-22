@@ -1,0 +1,12 @@
+
+(sentinel::privilege-required "Super")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(*) `count`
+
+    FROM ##instances x
+    WHERE {filters}
+`)

@@ -1,0 +1,13 @@
+
+(sentinel::privilege-required "Administrador, Clientes")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(*) `count`
+
+    FROM ##contacts x
+
+    WHERE {filters}
+`)

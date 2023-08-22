@@ -1,14 +1,35 @@
-DROP TABLE ##purchase_orders;
-CREATE TABLE ##purchases
-(
-    purchase_id int unsigned primary key auto_increment,
-    created datetime default null,
-    is_active tinyint not null default 1,
+alter table ##purchases add instance_id int unsigned;
+alter table ##purchases add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
 
-    supplier_id int unsigned,
-    constraint foreign key (supplier_id) references ##suppliers (supplier_id),
+alter table ##contacts add instance_id int unsigned;
+alter table ##contacts add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
 
-    status int default 0, /* 0=Pending, 1=Processed, 2=Cancelled, 3=Received, 4=Completed */
-    data mediumblob default '{}'
-)
-ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1;
+alter table ##sales add instance_id int unsigned;
+alter table ##sales add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+alter table ##suppliers add instance_id int unsigned;
+alter table ##suppliers add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+alter table ##products add instance_id int unsigned;
+alter table ##products add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+alter table ##warehouses add instance_id int unsigned;
+alter table ##warehouses add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+alter table ##units add instance_id int unsigned;
+alter table ##units add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+alter table ##taxes add instance_id int unsigned;
+alter table ##taxes add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+alter table ##departments add instance_id int unsigned;
+alter table ##departments add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+alter table ##positions add instance_id int unsigned;
+alter table ##positions add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;
+
+
+INSERT INTO ##privileges(name) VALUES ('Super');
+
+alter table ##users add instance_id int unsigned;
+alter table ##users add constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade;

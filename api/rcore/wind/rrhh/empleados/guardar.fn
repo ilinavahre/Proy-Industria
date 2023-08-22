@@ -2,12 +2,13 @@
 (sentinel::privilege-required "Administrador")
 
 (import "lib/utils" as "utils")
+(call "@filters")
 
 (shield::validate
     (shield::field id
         required true
         pattern integer
-        check:record_not_found (isnotnull (db::scalar `SELECT user_id FROM ##users WHERE is_active=1 AND user_id={$}`))
+        check:record_not_found (isnotnull (db::scalar `SELECT user_id FROM ##users WHERE is_active=1 AND user_id={$} {instance_filter}`))
     )
 )
 
@@ -21,13 +22,13 @@
     (shield::field username
         required false
         pattern identifier
-        check:record_exists (isnull (db::scalar `SELECT user_id FROM ##users WHERE user_id!={id} AND is_active=1 AND username={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT user_id FROM ##users x WHERE user_id!={id} AND is_active=1 AND username={!$} {instance_filter}`))
     )
 
     (shield::field position_id
         required false
         pattern integer
-        check:invalid (isnotnull (db::scalar `SELECT position_id FROM ##positions WHERE is_active=1 AND position_id={$}`))
+        check:invalid (isnotnull (db::scalar `SELECT position_id FROM ##positions x WHERE is_active=1 AND position_id={$} {instance_filter}`))
     )
 
     (shield::field password

@@ -1,0 +1,33 @@
+
+(sentinel::privilege-required "Administrador, Proveedores")
+
+(call "@filters")
+(call "pagination")
+
+(set list (db::table `
+    SELECT
+        x.supplier_id id,
+        x.created,
+        x.instance_id,
+        i.name instance,
+
+        x.is_visible,
+
+        x.name,
+        x.city,
+        x.state,
+        x.email,
+        x.phone
+
+    FROM ##suppliers x
+    LEFT JOIN ##instances i ON i.instance_id=x.instance_id
+
+    WHERE {filters}
+
+    ORDER BY {sort} {order}
+    LIMIT {offset}, {count}
+`))
+
+(for i (list)
+    (set i.s_created (locale::datetime (i.created)))
+)

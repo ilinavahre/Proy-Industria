@@ -2,6 +2,7 @@
 (sentinel::privilege-required "Administrador, Recursos Humanos")
 
 (import "lib/utils" as "utils")
+(call "@filters")
 
 (shield::begin)
 
@@ -9,6 +10,10 @@
 
     (shield::field created
         set (datetime::now)
+    )
+
+    (shield::field instance_id
+        set (session.user.instance_id)
     )
 
     (shield::field is_visible
@@ -19,13 +24,13 @@
     (shield::field name
         required true
         pattern text
-        check:record_exists (isnull (db::scalar `SELECT position_id FROM ##positions WHERE is_active=1 AND name={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT position_id FROM ##positions x WHERE is_active=1 AND name={!$} {instance_filter}`))
     )
 
     (shield::field department_id
         required true
         pattern integer
-        check:invalid (isnotnull (db::scalar `SELECT department_id FROM ##departments WHERE is_active=1 AND department_id={$}`))
+        check:invalid (isnotnull (db::scalar `SELECT department_id FROM ##departments x WHERE is_active=1 AND department_id={$} {instance_filter}`))
     )
 
     (shield::field salary

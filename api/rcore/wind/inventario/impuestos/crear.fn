@@ -1,7 +1,13 @@
 
 (sentinel::privilege-required "Administrador, Inventario")
 
+(call "@filters")
+
 (shield::validate input
+
+    (shield::field instance_id
+        set (session.user.instance_id)
+    )
 
     (shield::field created
         set (datetime::now)
@@ -15,7 +21,7 @@
     (shield::field name
         required true
         pattern text
-        check:record_exists (isnull (db::scalar `SELECT tax_id FROM ##taxes WHERE is_active=1 AND name={!$}`))
+        check:record_exists (isnull (db::scalar `SELECT tax_id FROM ##taxes x WHERE is_active=1 AND name={!$} {instance_filter}`))
     )
 
     (shield::field value

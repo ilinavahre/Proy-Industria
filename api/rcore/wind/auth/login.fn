@@ -13,4 +13,9 @@
 )
 
 (sentinel::login (form.username) (form.password))
+
+(if (isnull (session.user.instance_id))
+    (set session.user.instance_id (db::scalar `SELECT instance_id FROM ##instances WHERE is_active=1 AND user_id={session.user.user_id}`))
+)
+
 (&)

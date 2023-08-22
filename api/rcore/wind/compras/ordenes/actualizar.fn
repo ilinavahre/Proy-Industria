@@ -1,0 +1,52 @@
+
+(sentinel::privilege-required "Administrador, Compras")
+
+(import "lib/utils" as "utils")
+(call "@filters")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+        check:record_not_found (isnotnull (db::scalar `SELECT purchase_id FROM ##purchases x WHERE is_active=1 AND purchase_id={$} {instance_filter}`))
+    )
+)
+
+(shield::validate input
+    (shield::field status
+        required false
+        pattern integer
+    )
+)
+
+(db::update "##purchases" (& purchase_id (id)) (input))
+
+(when (and (db::affectedRows) (eq 4 (input.status)))
+    (set order (db::row `SELECT * FROM ##purchases WHERE purchase_id={id}`))
+    (set order.data (utils::json::parse (order.data)))
+
+    (for p (order.data)
+
+        (set product (db::row `SELECT * FROM ##products x WHERE is_active=1 AND warehouse_id={order.warehouse_id} AND code={!p.code} {instance_filter}`))
+        (when (isnull (product))
+            (set product (db::row `SELECT * FROM ##products x WHERE is_active=1 AND code={!p.code} {instance_filter} LIMIT 1`))
+
+            (set product.warehouse_id (order.warehouse_id))
+            (set product.created (datetime::now))
+            (set product.quantity 0)
+            (set photo (product.photo))
+            (unset product.photo)
+
+            (unset product.product_id)
+            (db::insert "##products" (product))
+            (set product.product_id (db::lastInsertId))
+
+            (when-not (isnull (photo))
+                (utils::setPicture (product.product_id) "##products" "product_id" "photo" (file::read (photo))))
+        )
+
+        (db::exec `UPDATE ##products SET quantity=quantity+{p.count} WHERE product_id={product.product_id}`)
+    )
+)
+
+(&)

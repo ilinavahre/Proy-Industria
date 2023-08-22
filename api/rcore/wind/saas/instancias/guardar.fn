@@ -1,0 +1,49 @@
+
+(sentinel::privilege-required "Super")
+
+(import "lib/utils" as "utils")
+
+(shield::validate
+    (shield::field id
+        required true
+        pattern integer
+        set (db::row `SELECT * FROM ##instances WHERE is_active=1 AND instance_id={$}`)
+        check:record_not_found (isnotnull ($))
+    )
+)
+
+(shield::validate input
+
+    (shield::field name
+        required false
+        pattern text
+    )
+
+    (shield::field company_name
+        required false
+        pattern text
+    )
+
+    (shield::field status
+        required false
+        pattern integer
+    )
+)
+
+(shield::validate input2
+
+    (shield::field admin_password
+        required false
+        pattern text
+        set (sentinel::password ($))
+    )
+)
+
+(db::update "##instances" "instance_id=(id.instance_id)" (input))
+
+(when (input2.admin_password)
+    (db::update "##users" (& user_id (id.user_id)) (& password (input2.admin_password)))
+)
+
+(utils::updatePicture (gateway.request) "company_logo" (id.instance_id) "##instances" "instance_id" "company_logo" 400 220)
+(&)

@@ -8,9 +8,11 @@
 )
 
 (set tables (#
+    "purchases"
     "sale_details"
     "sales"
     "user_privileges"
+    "privileges"
     "users"
     "positions"
     "departments"
@@ -19,6 +21,8 @@
     "units"
     "suppliers"
     "warehouses"
+    "contacts"
+    "instances"
 ))
 
 (set data (each i (array::reverse (tables))

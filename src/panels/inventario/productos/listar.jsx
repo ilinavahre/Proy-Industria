@@ -34,7 +34,7 @@ export default () =>
 
         <Paginacion dataSource={ ds }>
             <a class="btn alt-1 btn-br" href="#/inventario/productos/crear/"><i class="fa-solid fa-plus"></i> Registrar Producto</a>
-            <a class="btn alt-1" href="#/inventario/productos/ajustar/"><i class="fa-solid fa-right-left"></i> Ajuste de Inventario</a>
+            <a class="btn alt-2" href="#/inventario/productos/ajustar/"><i class="fa-solid fa-right-left"></i> Ajuste de Inventario</a>
         </Paginacion>
 
         <r-table dataSource={ ds }>
@@ -43,6 +43,7 @@ export default () =>
                 <tr>
                     <th style:width="3rem" data-sort="id"><span>ID</span></th>
                     <th style:width="11rem" data-sort="created"><span>Creado</span></th>
+                    <th data-sort="instance"><span>Instancia</span></th>
                     <th style:width="8rem" data-sort="code"><span>Código</span></th>
                     <th data-sort="warehouse"><span>Bodega</span></th>
                     <th data-sort="name"><span>Nombre</span></th>
@@ -59,6 +60,7 @@ export default () =>
                 <tr>
                     <th><input class="input-small" type="text" data-property="filter_id" /></th>
                     <th><input class="input-small" type="date" data-property="filter_created" /></th>
+                    <th><input class="input-small" type="date" data-property="filter_instance" /></th>
                     <th><input class="input-small" type="text" data-property="filter_code" /></th>
                     <th><input class="input-small" type="text" data-property="filter_warehouse" /></th>
                     <th><input class="input-small" type="text" data-property="filter_name" /></th>
@@ -77,7 +79,7 @@ export default () =>
 
             <tbody className="x-empty">
                 <tr>
-                    <td colSpan="11">No hay registros que mostrar.</td>
+                    <td colSpan="12">No hay registros que mostrar.</td>
                 </tr>
             </tbody>
 
@@ -85,6 +87,7 @@ export default () =>
                 <tr>
                     <td>{item.id}</td>
                     <td>{item.s_created}</td>
+                    <td>{item.instance}</td>
                     <td>{item.code}</td>
                     <td>{item.warehouse}</td>
                     <td>

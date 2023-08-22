@@ -1,6 +1,8 @@
 
 (sentinel::auth-required)
 
+(call "@filters")
+
 (db::table `
     SELECT
         x.unit_id value,
@@ -8,6 +10,6 @@
 
     FROM ##units x
 
-    WHERE x.is_active=1 AND x.is_visible=1
+    WHERE x.is_active=1 AND x.is_visible=1 {instance_filter}
     ORDER BY x.name ASC
 `)

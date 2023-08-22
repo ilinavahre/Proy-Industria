@@ -1,0 +1,13 @@
+
+(sentinel::privilege-required "Administrador, Compras")
+
+(call "@filters")
+
+(db::row `
+    SELECT
+        COUNT(*) `count`
+
+    FROM ##purchases x
+    INNER JOIN ##suppliers s ON s.is_active=1 AND s.supplier_id=x.supplier_id
+    WHERE {filters}
+`)

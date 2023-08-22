@@ -22,7 +22,19 @@
     )
 )
 
+(shield::validate
+    (shield::field instance_filter
+        ignore (sentinel::has-privilege "Super")
+        set "AND s.instance_id=(session.user.instance_id)"
+    )
+)
+
 (shield::validate filters
+
+    (shield::field instance_filter
+        ignore (sentinel::has-privilege "Super")
+        set "s.instance_id=(session.user.instance_id)"
+    )
 
     (shield::field sale_id
         required true

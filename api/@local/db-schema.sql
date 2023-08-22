@@ -15,12 +15,36 @@ DROP TABLE IF EXISTS ##taxes;
 DROP TABLE IF EXISTS ##units;
 DROP TABLE IF EXISTS ##suppliers;
 DROP TABLE IF EXISTS ##warehouses;
+DROP TABLE IF EXISTS ##contacts;
+DROP TABLE IF EXISTS ##instances;
+
+
+/* ******************************************************************************************* */
+CREATE TABLE ##instances
+(
+    instance_id int unsigned primary key auto_increment,
+    created datetime default null,
+    is_active tinyint not null default 1,
+
+    status int default 0,
+    name varchar(100) default '',
+
+    company_name varchar(100) default '',
+    company_logo varchar(128) default null,
+
+    user_id int unsigned default 0
+)
+ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1;
+
 
 /* ******************************************************************************************* */
 CREATE TABLE ##units
 (
     unit_id int unsigned primary key auto_increment,
     created datetime default null,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
 
     is_visible tinyint not null default 1,
     is_active tinyint not null default 1,
@@ -37,6 +61,9 @@ CREATE TABLE ##taxes
     tax_id int unsigned primary key auto_increment,
     created datetime default null,
 
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
+
     is_visible tinyint not null default 1,
     is_active tinyint not null default 1,
 
@@ -52,6 +79,9 @@ CREATE TABLE ##departments
     department_id int unsigned primary key auto_increment,
     created datetime default null,
 
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
+
     is_visible tinyint not null default 1,
     is_active tinyint not null default 1,
 
@@ -66,6 +96,9 @@ CREATE TABLE ##positions
 (
     position_id int unsigned primary key auto_increment,
     created datetime default null,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
 
     is_visible tinyint not null default 1,
     is_active tinyint not null default 1,
@@ -95,6 +128,9 @@ CREATE TABLE ##users
 (
     user_id int unsigned primary key auto_increment,
     created datetime default null,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
 
     is_authorized tinyint not null default 1,
     is_active tinyint not null default 1,
@@ -139,6 +175,7 @@ ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 INSERT INTO ##privileges(name) VALUES
+    ('Super'),
     ('Administrador'),
     ('Recursos Humanos'),
     ('Inventario'),
@@ -154,6 +191,9 @@ CREATE TABLE ##warehouses
 (
     warehouse_id int unsigned primary key auto_increment,
     created datetime default null,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
 
     is_active tinyint not null default 1,
 
@@ -178,6 +218,9 @@ CREATE TABLE ##suppliers
     supplier_id int unsigned primary key auto_increment,
     created datetime default null,
 
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
+
     is_active tinyint not null default 1,
     is_visible tinyint not null default 1,
 
@@ -198,6 +241,9 @@ CREATE TABLE ##products
 (
     product_id int unsigned primary key auto_increment,
     created datetime default null,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
 
     is_visible tinyint not null default 1,
     is_active tinyint not null default 1,
@@ -229,10 +275,17 @@ CREATE TABLE ##purchases
 (
     purchase_id int unsigned primary key auto_increment,
     created datetime default null,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
+
     is_active tinyint not null default 1,
 
     supplier_id int unsigned,
     constraint foreign key (supplier_id) references ##suppliers (supplier_id),
+
+    warehouse_id int unsigned,
+    constraint foreign key (warehouse_id) references ##warehouses (warehouse_id),
 
     status int default 0, /* 0=Pending, 1=Processed, 2=Cancelled, 3=Received, 4=Completed */
     data mediumblob default '{}'
@@ -245,6 +298,9 @@ CREATE TABLE ##sales
 (
     sale_id int unsigned primary key auto_increment,
     is_active tinyint not null default 1,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
 
     created datetime default null,
     created_by int unsigned,
@@ -277,3 +333,41 @@ CREATE TABLE ##sale_details
     taxes decimal(10,2)
 )
 ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+/* ******************************************************************************************* */
+CREATE TABLE ##contacts
+(
+    contact_id int unsigned primary key auto_increment,
+    created datetime default null,
+
+    instance_id int unsigned,
+    constraint foreign key (instance_id) references ##instances (instance_id) on delete cascade,
+
+    is_active tinyint not null default 1,
+
+    first_name varchar(100) default '',
+    middle_name varchar(100) default '',
+    last_name varchar(100) default '',
+
+    birthdate date default null,
+    gender varchar(1) default '',
+
+    address1 varchar(100) default '',
+    address2 varchar(100) default '',
+    city varchar(100) default '',
+    state varchar(100) default '',
+
+    email varchar(100) default '',
+    phone varchar(100) default '',
+
+    can_email tinyint default 1,
+    can_call tinyint default 1,
+    can_sms tinyint default 1,
+    can_whatsapp tinyint default 1,
+    can_telegram tinyint default 1,
+
+    status int default 0, /* 0=Oportunidad, 1=Cliente, 2=Potencial, 3=Cliente Recurrente */
+    data mediumblob default '{}'
+)
+ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1;

@@ -36,7 +36,8 @@ export async function checkAuth (callback=null)
 export function logout()
 {
     Api.fetch('auth/logout').then(r => {
-        authStatus.set(authStatus.NOT_AUTH);
+        location.reload();
+        //authStatus.set(authStatus.NOT_AUTH);
     });
 
     return false;

@@ -82,44 +82,66 @@ button.alt {
 /* ** */
 .sidebar {
     width: 16rem; margin: 1rem; border-radius: 0.5rem; padding: 0.5rem;
-    background: #f7f7f7; box-shadow: 0 0 1rem #aaa; flex: 0 0 auto;
+    background: #fff; box-shadow: 0 0 1rem #aaa; flex: 0 0 auto;
 }
 
 .sidebar > img {
-    display: block; width: 8rem; margin: 1rem auto 1.5rem auto;
+    display: block; width: 8rem; margin: 1rem auto 1.5rem auto; cursor: pointer;
 }
 
 .sidebar div a > b {
     display: block; font-weight: 600;
 }
 
-.sidebar div a > img {
-    border-radius: 999px; width: 4rem; vertical-align: middle;
-    border: 3px solid #fff;
+.sidebar .r-tabs a {
+    display: block; text-decoration: none; padding: 0; cursor: pointer; color: inherit; padding: 0.8rem 0.8rem;
 }
 
-r-tabs > div {
-    background: #e7f7f7; margin: 0.5rem; padding: 0.5rem 0.8rem; border-radius: 0.25rem; position: relative;
+.sidebar .r-tabs a i {
+    display: inline-block; margin-right: 0.5rem; font-size: 1.5rem; vertical-align: middle; line-height: 1;
 }
 
-r-tabs > div > b {
-    display: block; font-size: 0.8rem; text-transform: uppercase; color: #006e67; padding-top: 0.2rem;
+.sidebar .r-tabs a img {
+    display: inline-block; border-radius: 999px; width: 2rem; vertical-align: middle; margin-right: 0.2rem;
 }
 
-r-tabs > div > div {
-    border-left: 2px solid #60cec7; padding-left: 1rem; margin-top: 0.2rem;
+.sidebar .r-tabs a span {
+    display: inline-block; vertical-align: middle; line-height: 1;
 }
 
-r-tabs a {
-    display: block; text-decoration: none; padding: 0.3rem 0; color: #488; cursor: pointer;
+/* ** */
+.sidebar r-panel {
+    display: block !important; overflow: hidden; margin: 0.5rem 0.2rem; border-radius: 0.25rem; position: relative;
+    color: #8790a2; background: #e7f6f8;
 }
 
-r-tabs a:hover {
-    color: #244;
+.sidebar r-panel:hover {
+    background: #879698; color: #fff;
 }
 
-r-tabs a.active {
-    color: #244; font-weight: 900;
+.sidebar r-panel.active {
+    background: #00a4be; color: #fff;
+}
+
+/* ** */
+.sidebar.is-compact {
+    width: 4rem; text-align: center;
+}
+
+.sidebar.is-compact > img {
+    width: 80%;
+}
+
+.sidebar.is-compact .r-tabs > div {
+    padding-left: 0; padding-right: 0; text-align: center;
+}
+
+.sidebar.is-compact .r-tabs a i, .sidebar.is-compact .r-tabs a img {
+    display: inline-block; margin: 0;
+}
+
+.sidebar.is-compact .r-tabs a span {
+    display: none;
 }
 
 /* ** */
@@ -381,6 +403,10 @@ th[data-sort][data-order="desc"]:before {
 
 .tabs r-panel:last-child {
     border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.tabs r-panel:first-child:last-child {
+    border-radius: 0.5rem;
 }
 
 .tabs r-panel.active {
