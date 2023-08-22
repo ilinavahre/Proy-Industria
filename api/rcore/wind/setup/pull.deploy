@@ -1,5 +1,5 @@
 CHDIR ../../../..
-LIVE {path::append {path::cwd} "live"}
+LIVE {path::cwd}
 
 ECHO Cargando desde GitHub ...
     RMDIR staging
