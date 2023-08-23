@@ -4,7 +4,7 @@ PUTENV COREPACK_HOME=/home/bitnami/.corepack
 PUTENV PNPM_HOME=/home/bitnami/.pnpm
 
 ECHO Cargando desde GitHub ...
-    RMDIR staging
+    EXEC rm -rf staging
     EXEC git clone "https://github.com/ilinavahre/Proy-Industria" "staging"
     CHDIR staging
 
