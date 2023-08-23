@@ -26,14 +26,14 @@
 
 (shield::validate
     (shield::field instance_filter
-        set (? (sentinel::has-privilege "Super") "" "AND x.instance_id=(session.user.instance_id)")
+        set (? (session.user.instance_id) "AND x.instance_id=(session.user.instance_id)" "")
     )
 )
 
 (shield::validate filters
 
     (shield::field instance_filter
-        ignore (sentinel::has-privilege "Super")
+        ignore (? (session.user.instance_id) false true)
         set "x.instance_id=(session.user.instance_id)"
     )
 

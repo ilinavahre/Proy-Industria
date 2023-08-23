@@ -1,5 +1,5 @@
 
-(sentinel::privilege-required "Administrador, Proveedores")
+(sentinel::auth-required)
 
 (call "@filters")
 

@@ -1,5 +1,5 @@
 
-(sentinel::privilege-required "Administrador")
+(sentinel::privilege-required "Administrador, Recursos Humanos")
 
 (import "lib/utils" as "utils")
 (call "@filters")
