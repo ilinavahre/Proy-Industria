@@ -1,5 +1,5 @@
 
-(sentinel::privilege-required "Administrador, Inventario")
+(sentinel::privilege-required "Administrador, Inventario, Compras")
 
 (shield::validate
     (shield::field code
