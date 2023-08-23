@@ -47,7 +47,6 @@ ECHO Configurando ...
 
 ECHO Limpiando ...
 	RMDIR {LIVE}/api/@local
-	RMDIR {LIVE}/api/logs
 	RMDIR {LIVE}/api/volatile
 	DEL {LIVE}/api/composer.lock
 	DEL {LIVE}/api/composer.json
