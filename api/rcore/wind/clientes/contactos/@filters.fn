@@ -2,6 +2,8 @@
 (set camposOrdenables (&
     id              "x.contact_id"
     created         "x.created"
+    instance        "i.name"
+    status          "x.status"
     first_name      "x.first_name"
     middle_name     "x.middle_name"
     last_name       "x.last_name"
@@ -18,7 +20,7 @@
 
     (shield::field sort
         default-stop "created"
-        pattern `/^(id|created|first_name|middle_name|last_name|birthdate|gender|address|city|state|email|phone)$/`
+        pattern `/^(id|created|instance|status|first_name|middle_name|last_name|birthdate|gender|address|city|state|email|phone)$/`
         set (camposOrdenables.($))
     )
 
@@ -51,6 +53,12 @@
         set `DATE(x.created)={!$}`
     )
 
+    (shield::field filter_instance
+        required false
+        pattern text
+        set `i.name LIKE {escape {str % {$} %}}`
+    )
+
     (shield::field id
         required false
         pattern integer
@@ -77,6 +85,12 @@
         required false
         pattern text
         set `x.last_name LIKE {escape {str % {$} %}}`
+    )
+
+    (shield::field filter_status
+        required false
+        pattern integer
+		set `x.status={!$}`
     )
 
     (shield::field filter_gender

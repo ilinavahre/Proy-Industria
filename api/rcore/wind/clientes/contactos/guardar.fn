@@ -30,6 +30,10 @@
         pattern date
     )
 
+    (shield::field status
+        required false
+        pattern integer
+    )
     (shield::field gender
         required false
         pattern letter

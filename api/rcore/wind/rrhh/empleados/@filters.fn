@@ -2,6 +2,7 @@
 (set camposOrdenables (&
     id         		"x.user_id"
     created         "x.created"
+    instance        "i.name"
     username       	"x.username"
     name      		"x.name"
     email      		"x.email"
@@ -11,7 +12,7 @@
 
     (shield::field sort
         default-stop "created"
-        pattern `/^(id|created|username|name|email)$/`
+        pattern `/^(id|created|instance|username|name|email)$/`
         set (camposOrdenables.($))
     )
 
@@ -42,6 +43,12 @@
         required false
         pattern date
         set `DATE(x.created)={!$}`
+    )
+
+    (shield::field filter_instance
+        required false
+        pattern text
+        set `i.name LIKE {escape {str % {$} %}}`
     )
 
     (shield::field id

@@ -3,6 +3,7 @@
     id              "x.supplier_id"
     is_visible      "x.is_visible"
     created         "x.created"
+    instance        "i.name"
     name            "x.name"
     city            "x.city"
     state           "x.state"
@@ -14,7 +15,7 @@
 
     (shield::field sort
         default-stop "created"
-        pattern `/^(id|is_visible|created|name|city|state|email|phone)$/`
+        pattern `/^(id|is_visible|created|instance|name|city|state|email|phone)$/`
         set (camposOrdenables.($))
     )
 
@@ -45,6 +46,12 @@
         required false
         pattern date
         set `DATE(x.created)={!$}`
+    )
+
+    (shield::field filter_instance
+        required false
+        pattern text
+        set `i.name LIKE {escape {str % {$} %}}`
     )
 
     (shield::field id

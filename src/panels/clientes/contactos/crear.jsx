@@ -44,6 +44,16 @@ export const Campos = () =>
                 <option value="X">X - No Especificado</option>
             </select>
         </div>
+        <div className="field flex-even">
+            <label>Estado</label>
+            <select class="input-small" data-field="status">
+                <option value="">(Seleccionar ...)</option>
+                <option value="0">Oportunidad</option>
+                <option value="1">Cliente</option>
+                <option value="2">Potencial</option>
+                <option value="3">Cliente Recurrente</option>
+            </select>
+        </div>
     </div>
 
     <div class="flex-row" style:gap="1.5rem">

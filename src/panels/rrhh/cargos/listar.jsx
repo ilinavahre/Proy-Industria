@@ -57,7 +57,7 @@ export default () =>
                 <tr>
                     <th><input class="input-small" type="text" data-property="filter_id" /></th>
                     <th><input class="input-small" type="date" data-property="filter_created" /></th>
-                    <th><input class="input-small" type="date" data-property="filter_instance" /></th>
+                    <th><input class="input-small" type="text" data-property="filter_instance" /></th>
                     <th><input class="input-small" type="text" data-property="filter_department" /></th>
                     <th><input class="input-small" type="text" data-property="filter_name" /></th>
                     <th><input class="input-small" type="text" data-property="filter_salary" /></th>
