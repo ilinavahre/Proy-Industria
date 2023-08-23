@@ -1,4 +1,33 @@
 
+(gateway::persistent)
+(import "lib/deploy")
+
+(when (eq "application/json" (gateway.input.contentType))
+
+    (set r (gateway.input.data))
+
+    (when (ne (r.repository.id) "653874868")
+        (throw "Invalid repository ID"))
+
+    (when (ne (r.repository.full_name) "ilinavahre/Proy-Industria")
+        (throw "Invalid repository identifier"))
+
+    (when (ne (r.ref) "refs/heads/main")
+        (throw "Invalid repository branch"))
+
+    (trace "[INFO] [(datetime::now)] Received webhook: commit: (r.head_commit.id), message: (r.head_commit.message) [pushed at: (r.pushed_at)]")
+
+    (try
+        (execute "rcore/live.deploy")
+    catch
+        (trace "[ERROR] [(datetime::now)] Error: (err)")
+        (echo "Error: (err)")
+    )
+
+    (trace "[INFO] [(datetime::now)] Completed")
+    (stop)
+)
+
 (shield::validate
 	(shield::field token
 		required true
@@ -6,10 +35,6 @@
 		check:invalid-token (eq (config.Sentinel.token) ($))
 	)
 )
-
-(gateway::persistent)
-
-(import "lib/deploy")
 
 (try
     (execute "rcore/live.deploy")
