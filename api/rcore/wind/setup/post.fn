@@ -32,4 +32,4 @@
     )
 ))
 
-(http::post "https://crisol.app/gse/api/setup/update?token=(config.Sentinel.token)" (utils::json::stringify (data)))
+(http::post "https://p1.crisol.app/api/setup/update?token=(config.Sentinel.token)" (utils::json::stringify (data)))
